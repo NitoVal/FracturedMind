@@ -34,6 +34,8 @@ APlayerCharacter::APlayerCharacter()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
+	HandPosition = CreateDefaultSubobject<USceneComponent>(TEXT("HandPosition"));
+	HandPosition->SetupAttachment(FirstPersonCameraComponent);
 }
 
 // Called when the game starts or when spawned
@@ -102,13 +104,17 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::Interact()
 {
-	if (CurrentInteractable->IsInteractable())
+	if (CurrentInteractable && CurrentInteractable->IsInteractable())
+	{
 		CurrentInteractable->Interact();
+		PlayerWidget->SetInteractPromptVisibility(false);
+	}
+
 }
 
 void APlayerCharacter::Pause()
 {
-	
+	GEngine->AddOnScreenDebugMessage(1,5, FColor::Red, "Pausing");
 }
 
 void APlayerCharacter::PerformLineTrace()
@@ -133,6 +139,10 @@ void APlayerCharacter::PerformLineTrace()
 		}
 	}
 	else
+	{
+		CurrentInteractable = nullptr;
 		PlayerWidget->SetInteractPromptVisibility(false);
+	}
+
 }
 
