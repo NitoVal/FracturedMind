@@ -7,6 +7,7 @@
 #include "PlayerCharacter.generated.h"
 
 class AItem;
+class ABigItems;
 class IInteractionInterface;
 class UPlayerWidget;
 class UInputComponent;
@@ -30,6 +31,9 @@ class FRACTUREDMIND_API APlayerCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	USceneComponent* HandPosition;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	USceneComponent* HandPositionBigItem;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
 	
@@ -47,6 +51,9 @@ class FRACTUREDMIND_API APlayerCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* DropAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* PlaceItemAction;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PauseAction;
@@ -67,10 +74,14 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | Item")
 	AItem* Hand;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | BigItems")
+	ABigItems* HandBigItem;
 	
-
-
+    void PickupBigItem(ABigItems* BigItems);
+	void PlaceBigItem();
 	void Pickup(AItem* Item);
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
