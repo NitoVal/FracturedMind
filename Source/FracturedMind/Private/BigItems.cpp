@@ -1,47 +1,42 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Chair.h"
+
+#include "BigItems.h"
 #include "FracturedMind/Item.h"
 #include "FracturedMind/PlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
-AChair::AChair()
+ABigItems::ABigItems()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
-	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
-    RootComponent = DefaultSceneRoot;
-    
-    ChairComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ChairComp"));
-    ChairComp->SetupAttachment(RootComponent);
-
+	BigItemComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BigItemComp"));
+	BigItemComp->SetupAttachment(RootComponent); 
 }
 
 // Called when the game starts or when spawned
-void AChair::BeginPlay()
+void ABigItems::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void AChair::Tick(float DeltaTime)
+void ABigItems::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
-void AChair::Interact()
+void ABigItems::Interact()
 {
 	APlayerCharacter* Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	this->SetActorEnableCollision(false);
-	Player->Pickup(this);
+	Player->PickupBigItem(this);
 }
 
-bool AChair::IsInteractable()
+bool ABigItems::IsInteractable()
 {
 	return true;
 }
-

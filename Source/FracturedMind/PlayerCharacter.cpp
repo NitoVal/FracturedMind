@@ -1,6 +1,4 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "PlayerCharacter.h"
 
 #include "PlayerWidget.h"
@@ -12,6 +10,7 @@
 #include "InputActionValue.h"
 #include "InteractionInterface.h"
 #include "Item.h"
+#include "BigItems.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -37,6 +36,9 @@ APlayerCharacter::APlayerCharacter()
 
 	HandPosition = CreateDefaultSubobject<USceneComponent>(TEXT("HandPosition"));
 	HandPosition->SetupAttachment(FirstPersonCameraComponent);
+
+	HandPositionBigItem = CreateDefaultSubobject<USceneComponent>(TEXT("HandPositionBigItem"));
+	HandPositionBigItem->SetupAttachment(FirstPersonCameraComponent);
 }
 
 // Called when the game starts or when spawned
@@ -172,11 +174,40 @@ void APlayerCharacter::Pause()
 void APlayerCharacter::Pickup(AItem* Item)
 {
 	//Check if the player has no item
-	if (!Hand)
+	if (!Hand && !HandBigItem)
 	{
 		Hand = Item;
 		Hand->AttachToComponent(HandPosition,FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 		Hand->SetActorLocation(HandPosition->GetComponentLocation());
+	}
+}
+
+void APlayerCharacter::PickupBigItem(ABigItems* BigItems)
+{
+	//Check if the player has no item
+	
+	if (!Hand && !HandBigItem)
+	{
+		HandBigItem = BigItems;
+		HandBigItem->AttachToComponent(HandPositionBigItem,FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+		HandBigItem->SetActorLocation(HandPositionBigItem->GetComponentLocation());
+	}
+}
+
+void APlayerCharacter::PlaceBigItem(ABigItems* BigItems)
+{
+	//Check if the player have an item
+	if (!Hand && HandBigItem)
+	{
+		FVector Start = FirstPersonCameraComponent->GetComponentLocation();
+		FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
+		FVector PlaceLocation = Start + (ForwardVector * 200.f);
+		
+		HandBigItem->SetActorLocation(PlaceLocation);
+		
+		HandBigItem->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		HandBigItem->SetActorEnableCollision(true); 
+		HandBigItem = nullptr;  
 	}
 }
 

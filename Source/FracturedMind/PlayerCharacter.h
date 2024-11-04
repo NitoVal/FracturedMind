@@ -7,6 +7,7 @@
 #include "PlayerCharacter.generated.h"
 
 class AItem;
+class ABigItems;
 class IInteractionInterface;
 class UPlayerWidget;
 class UInputComponent;
@@ -29,6 +30,9 @@ class FRACTUREDMIND_API APlayerCharacter : public ACharacter
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	USceneComponent* HandPosition;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	USceneComponent* HandPositionBigItem;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
@@ -67,9 +71,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | Item")
 	AItem* Hand;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | BigItems")
+	ABigItems* HandBigItem;
 	
-
-
+    void PickupBigItem(ABigItems* BigItems);
+	void PlaceBigItem(ABigItems* BigItems);
 	void Pickup(AItem* Item);
 protected:
 	virtual void BeginPlay() override;
