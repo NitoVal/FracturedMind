@@ -10,7 +10,7 @@
 #include "InputActionValue.h"
 #include "InteractionInterface.h"
 #include "Item.h"
-#include "BigItems.h"
+#include "Private/BigItems.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
