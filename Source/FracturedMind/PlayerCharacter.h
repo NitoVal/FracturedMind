@@ -51,6 +51,9 @@ class FRACTUREDMIND_API APlayerCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* DropAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* PlaceItemAction;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PauseAction;
@@ -76,8 +79,9 @@ public:
 	ABigItems* HandBigItem;
 	
     void PickupBigItem(ABigItems* BigItems);
-	void PlaceBigItem(ABigItems* BigItems);
+	void PlaceBigItem();
 	void Pickup(AItem* Item);
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;

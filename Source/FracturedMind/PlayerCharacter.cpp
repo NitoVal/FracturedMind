@@ -102,6 +102,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Interact);
 		EnhancedInputComponent->BindAction(DropAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Drop);
+		EnhancedInputComponent->BindAction(PlaceItemAction, ETriggerEvent::Triggered, this, &APlayerCharacter::PlaceBigItem);
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Pause);
 	}
 }
@@ -182,10 +183,9 @@ void APlayerCharacter::Pickup(AItem* Item)
 	}
 }
 
-void APlayerCharacter::PickupBigItem(ABigItems* BigItems)
+void APlayerCharacter::PickupBigItem(ABigItems* BigItems) // Called in Class BigItems so the called scene in the character bp is different
 {
-	//Check if the player has no item
-	
+	//Check if the player has no item  
 	if (!Hand && !HandBigItem)
 	{
 		HandBigItem = BigItems;
@@ -194,7 +194,7 @@ void APlayerCharacter::PickupBigItem(ABigItems* BigItems)
 	}
 }
 
-void APlayerCharacter::PlaceBigItem(ABigItems* BigItems)
+void APlayerCharacter::PlaceBigItem()
 {
 	//Check if the player have an item
 	if (!Hand && HandBigItem)
