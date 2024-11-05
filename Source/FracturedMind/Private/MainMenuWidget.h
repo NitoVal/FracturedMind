@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MainMenuWidget.generated.h"
 
+class UButton;
 /**
  * 
  */
@@ -18,7 +19,7 @@ protected:
 	virtual void NativeConstruct() override;
 private:
 	UPROPERTY(meta = (BindWidget))
-	class UButton* NewGameButton;
+	UButton* NewGameButton;
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* SettingsButton;
