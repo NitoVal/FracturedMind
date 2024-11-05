@@ -69,9 +69,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
 	TSubclassOf<UUserWidget> PauseWidgetClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
-	TSubclassOf<UUserWidget> SettingsWidgetClass;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | Item")
 	AItem* Hand;
 
@@ -81,7 +78,7 @@ public:
     void PickupBigItem(ABigItems* BigItems);
 	void PlaceBigItem();
 	void Pickup(AItem* Item);
-	
+	void Pause();
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -90,7 +87,6 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Interact();
-	void Pause();
 	
 	void Drop();
 private:
@@ -98,7 +94,6 @@ private:
 	
 	UPlayerWidget* PlayerWidget;
 	UUserWidget* PauseWidget;
-	UUserWidget* SettingsWidget;
 	
 	void PerformLineTrace();
 };

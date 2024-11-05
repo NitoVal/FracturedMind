@@ -62,13 +62,6 @@ void APlayerCharacter::BeginPlay()
 		PauseWidget->AddToViewport();
 		PauseWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
-	if (SettingsWidgetClass)
-	{
-		UUserWidget* UserWidget = CreateWidget<UUserWidget>(GetWorld(), SettingsWidgetClass);
-		SettingsWidget = UserWidget;
-		SettingsWidget->AddToViewport();
-		SettingsWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
 }
 
 // Called every frame
