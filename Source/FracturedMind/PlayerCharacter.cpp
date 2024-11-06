@@ -198,9 +198,12 @@ void APlayerCharacter::PlaceBigItem()
 		FVector Start = FirstPersonCameraComponent->GetComponentLocation();
 		FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
 		FVector PlaceLocation = Start + (ForwardVector * 200.f);
-		
+ 
+		FRotator CameraRotation = FirstPersonCameraComponent->GetComponentRotation(); //Make sure the big item is straight when placed
+		FRotator PlaceRotation = FRotator(0.f, CameraRotation.Yaw, 0.f);
+
 		HandBigItem->SetActorLocation(PlaceLocation);
-		
+		HandBigItem->SetActorRotation(PlaceRotation); 
 		HandBigItem->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		HandBigItem->SetActorEnableCollision(true); 
 		HandBigItem = nullptr;  
