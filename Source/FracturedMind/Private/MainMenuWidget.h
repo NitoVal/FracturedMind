@@ -14,7 +14,9 @@ UCLASS()
 class UMainMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Pause Menu | UI")
+	TSubclassOf<UUserWidget> SettingsWidgetClass;
 protected:
 	virtual void NativeConstruct() override;
 private:
@@ -35,4 +37,6 @@ private:
 
 	UFUNCTION()
 	void OnQuitClicked();
+
+	UUserWidget* SettingsWidget;
 };

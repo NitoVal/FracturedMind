@@ -44,9 +44,29 @@ public:
 	
 	UPROPERTY(meta = (BindWidget))
 	UButton* BackButton;
-	
+
 protected:
 	virtual void NativeConstruct() override;
+
+	UFUNCTION()
+	void SetVSync(bool State);
 	
+	UFUNCTION()
+	void SetVolume(float Volume);
+
+	UFUNCTION()
+	void SetSensitivity(float Value);
+	
+	UFUNCTION()
+	void SetShowFPS(bool State);
+	
+	UFUNCTION()
+	void ApplySettings();
+	
+	UFUNCTION()
+	void Back();
+	
+	void OnSettingsModified();
 private:
+	bool bAreSettingsChanged;
 };
