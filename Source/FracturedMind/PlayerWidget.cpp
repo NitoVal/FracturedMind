@@ -3,3 +3,59 @@
 
 #include "PlayerWidget.h"
 
+#include "Components/TextBlock.h"
+
+void UPlayerWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+}
+
+void UPlayerWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+	
+	if (FPSText->IsVisible())
+	{
+		FrameCount++;
+		TimeAccumulator += InDeltaTime;
+
+		if (TimeAccumulator >= 1.0f)
+		{
+			int CurrentFPS = FrameCount / TimeAccumulator;
+			UpdateFPS(CurrentFPS);
+			
+			FrameCount = 0;
+			TimeAccumulator = 0.0f;
+		}
+	}
+}
+
+void UPlayerWidget::SetInteractPromptVisibility(bool bIsVisible)
+{
+	if (InteractionPromptText)
+	{
+		ESlateVisibility DesiredVisibility  = bIsVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+		InteractionPromptText->SetVisibility(DesiredVisibility);
+	}
+}
+
+void UPlayerWidget::SetFPSCounterVisibility(bool bIsVisible)
+{
+	if (FPSText && FPSLabel)
+	{
+		ESlateVisibility DesiredVisibility  = bIsVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+		FPSLabel->SetVisibility(DesiredVisibility);
+		FPSText->SetVisibility(DesiredVisibility);
+	}
+}
+
+void UPlayerWidget::UpdateFPS(float NewFPS)
+{
+	if (FPSText)
+	{
+		FPSText->SetText(FText::AsNumber(NewFPS));
+	}
+}
+
+
+

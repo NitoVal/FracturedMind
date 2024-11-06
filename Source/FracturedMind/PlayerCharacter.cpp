@@ -10,7 +10,7 @@
 #include "InputActionValue.h"
 #include "InteractionInterface.h"
 #include "Item.h"
-#include "BigItems.h"
+#include "Private/BigItems.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -61,13 +61,6 @@ void APlayerCharacter::BeginPlay()
 		PauseWidget = UserWidget;
 		PauseWidget->AddToViewport();
 		PauseWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
-	if (SettingsWidgetClass)
-	{
-		UUserWidget* UserWidget = CreateWidget<UUserWidget>(GetWorld(), SettingsWidgetClass);
-		SettingsWidget = UserWidget;
-		SettingsWidget->AddToViewport();
-		SettingsWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
