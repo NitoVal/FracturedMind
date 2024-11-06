@@ -65,7 +65,7 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
 	TSubclassOf<UUserWidget> PlayerWidgetClass;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
 	TSubclassOf<UUserWidget> PauseWidgetClass;
 
@@ -74,7 +74,13 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | BigItems")
 	ABigItems* HandBigItem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Player | Settings")
+	float Sensitivity = 1.0f;
 	
+	UPlayerWidget* PlayerWidget;
+	
+	void SetSensitivity(float NewSensitivity);
     void PickupBigItem(ABigItems* BigItems);
 	void PlaceBigItem();
 	void Pickup(AItem* Item);
@@ -91,8 +97,7 @@ protected:
 	void Drop();
 private:
 	TScriptInterface<IInteractionInterface> CurrentInteractable;
-	
-	UPlayerWidget* PlayerWidget;
+
 	UUserWidget* PauseWidget;
 	
 	void PerformLineTrace();

@@ -121,11 +121,14 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 	if (Controller != nullptr)
 	{
 		// add yaw and pitch input to controller
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
+		AddControllerYawInput(LookAxisVector.X * Sensitivity);
+		AddControllerPitchInput(LookAxisVector.Y * Sensitivity);
 	}
 }
-
+void APlayerCharacter::SetSensitivity(float NewSensitivity)
+{
+	Sensitivity = FMath::Clamp(NewSensitivity, 0.1f, 10.0f); // Clamp for safety
+}
 void APlayerCharacter::Interact()
 {
 	if (CurrentInteractable && CurrentInteractable->IsInteractable())
