@@ -11,6 +11,8 @@
 #include "InteractionInterface.h"
 #include "Item.h"
 #include "Private/BigItems.h"
+#include "TimerManager.h"
+#include "GameFramework/Actor.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -73,6 +75,8 @@ void APlayerCharacter::Tick(float DeltaTime)
 	{
 		HandPosition->SetRelativeRotation(Hand->HoldRotation);
 	}
+	 
+	 AdjustItemScale(); 
 }
 
 // Called to bind functionality to input
@@ -198,15 +202,40 @@ void APlayerCharacter::PlaceBigItem()
 		FVector Start = FirstPersonCameraComponent->GetComponentLocation();
 		FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
 		FVector PlaceLocation = Start + (ForwardVector * 200.f);
- 
-		FRotator CameraRotation = FirstPersonCameraComponent->GetComponentRotation(); //Make sure the big item is straight when placed
+        
+		FRotator CameraRotation = FirstPersonCameraComponent->GetComponentRotation();
 		FRotator PlaceRotation = FRotator(0.f, CameraRotation.Yaw, 0.f);
 
 		HandBigItem->SetActorLocation(PlaceLocation);
-		HandBigItem->SetActorRotation(PlaceRotation); 
+		HandBigItem->SetActorRotation(PlaceRotation);  
+		
 		HandBigItem->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-		HandBigItem->SetActorEnableCollision(true); 
-		HandBigItem = nullptr;  
+		HandBigItem->SetActorEnableCollision(true);  
+		HandBigItem = nullptr; 
+	}
+
+}
+
+void APlayerCharacter::AdjustItemScale()
+{
+	if (!Hand && HandBigItem)
+	{
+		FRotator CameraRotation = FirstPersonCameraComponent->GetComponentRotation();
+		float CameraPitch = CameraRotation.Pitch;
+
+		static float LastPitch = CameraPitch;
+		static float ScaleDelta = 1.0f; 
+		float PitchDifference = CameraPitch - LastPitch;
+
+		ScaleDelta += PitchDifference * 0.1f; 
+		ScaleDelta = FMath::Clamp(ScaleDelta, 0.1f, 8.f);
+
+		FVector NewScale = HandBigItem->GetActorScale3D();
+		NewScale = FVector(ScaleDelta, ScaleDelta, ScaleDelta); 
+		HandBigItem->SetActorScale3D(NewScale); 
+		LastPitch = CameraPitch;
+		
+		bIsItemReleased = false;
 	}
 }
 

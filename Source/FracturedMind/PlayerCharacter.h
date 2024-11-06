@@ -83,22 +83,21 @@ public:
 	void SetSensitivity(float NewSensitivity);
     void PickupBigItem(ABigItems* BigItems);
 	void PlaceBigItem();
+	void AdjustItemScale();   
 	void Pickup(AItem* Item);
 	void Pause();
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	bool bIsItemReleased = false; 
 
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
-	void Interact();
-	
+	void Interact(); 
 	void Drop();
 private:
 	TScriptInterface<IInteractionInterface> CurrentInteractable;
-
-	UUserWidget* PauseWidget;
-	
+	UUserWidget* PauseWidget; 
 	void PerformLineTrace();
 };
