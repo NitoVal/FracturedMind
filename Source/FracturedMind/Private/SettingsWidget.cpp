@@ -20,25 +20,21 @@ void USettingsWidget::NativeConstruct()
 		UE_LOG(LogTemp, Warning, TEXT("Failed to retrieve GameUserSettings"));
 		return;
 	}
-	
 	if (VolumeSlider)
 	{
 		VolumeSlider->OnValueChanged.AddDynamic(this, &USettingsWidget::SetVolume);
 		VolumeSlider->SetValue(GameSettings->GetMasterVolume());
 	}
-	
 	if (SensitivitySlider)
 	{
 		SensitivitySlider->OnValueChanged.AddDynamic(this, &USettingsWidget::SetSensitivity);
 		SensitivitySlider->SetValue(GameSettings->GetMouseSensitivity());
 	}
-	
 	if (ApplyButton)
 	{
 		ApplyButton->OnClicked.AddDynamic(this, &USettingsWidget::ApplySettings);
 		ApplyButton->SetIsEnabled(false);
 	}
-
 	if (BackButton)
 		BackButton->OnClicked.AddDynamic(this, &USettingsWidget::Back);
 }

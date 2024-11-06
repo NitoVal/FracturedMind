@@ -26,7 +26,12 @@ void UMainMenuWidget::OnNewGameClicked()
 
 void UMainMenuWidget::OnSettingsClicked()
 {
-	// Open settings menu or widget
+	if (SettingsWidgetClass)
+	{
+		UUserWidget* UserWidget = CreateWidget<UUserWidget>(GetWorld(), SettingsWidgetClass);
+		SettingsWidget = UserWidget;
+		SettingsWidget->AddToViewport();
+	}
 }
 
 void UMainMenuWidget::OnQuitClicked()
