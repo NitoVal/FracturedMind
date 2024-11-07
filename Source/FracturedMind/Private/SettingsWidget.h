@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "SettingsWidget.generated.h"
 
+class UTextBlock;
+class UComboBoxString;
 class USlider;
 class UComboBoxKey;
 class UCheckBox;
@@ -18,23 +20,20 @@ class USettingsWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	// UPROPERTY(meta = (BindWidget))
-	// UComboBoxKey* DisplayComboBox;
-	
-	// UPROPERTY(meta = (BindWidget))
-	// UComboBoxKey* ResolutionsComboBox;
-
-	// UPROPERTY(meta = (BindWidget))
-	// UComboBoxKey* FramerateComboBox;
-	
 	UPROPERTY(meta = (BindWidget))
-	UCheckBox* VSyncCheckBox;
+	UComboBoxString* ResolutionsComboBox;
 	
 	UPROPERTY(meta = (BindWidget))
 	USlider* VolumeSlider;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* VolumeText;
 	
 	UPROPERTY(meta = (BindWidget))
 	USlider* SensitivitySlider;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* SensitivityText;
 	
 	UPROPERTY(meta = (BindWidget))
 	UCheckBox* ShowFPSCheckBox;
@@ -46,10 +45,20 @@ public:
 	UButton* BackButton;
 
 protected:
+
 	virtual void NativeConstruct() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings Menu | Audio")
+	USoundMix* MasterMixAudio;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings Menu | Audio")
+	USoundClass* MasterAudio;
+	
+	UPROPERTY()
+	TArray<FIntPoint> Resolutions;
+	
 	UFUNCTION()
-	void SetVSync(bool State);
+	void OnResolutionChanged(FString SelectedItem, ESelectInfo::Type SelectionType);
 	
 	UFUNCTION()
 	void SetVolume(float Volume);
@@ -67,6 +76,11 @@ protected:
 	void Back();
 	
 	void OnSettingsModified();
+	void UpdateApplyButtonState();
 private:
 	bool bAreSettingsChanged;
+	bool bIsShowFPSOn;
+	float CurrentVolume;
+	float CurrentSensitivity;
+	FIntPoint SelectedResolution;
 };

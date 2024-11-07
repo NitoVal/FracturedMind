@@ -3,25 +3,20 @@
 
 #include "PlayerGameUserSettings.h"
 
-
-void UPlayerGameUserSettings::SetMasterVolume(float Volume)
+UPlayerGameUserSettings::UPlayerGameUserSettings(const FObjectInitializer& ObjectInitializer):Super(ObjectInitializer) //Constructor
 {
-	MasterVolume = FMath::Clamp(Volume, 0.0f, 1.0f);
-	SaveConfig();
+	Volume = 1;
+	Sensitivity = 1;
+	bIsFPSShown = false;
 }
 
-float UPlayerGameUserSettings::GetMasterVolume() const
+UPlayerGameUserSettings* UPlayerGameUserSettings::GetPlayerGameUserSettings()
 {
-	return MasterVolume;
+	return Cast<UPlayerGameUserSettings>(GetGameUserSettings());
 }
 
-void UPlayerGameUserSettings::SetMouseSensitivity(float Sensitivity)
+FString UPlayerGameUserSettings::GetResolution() const
 {
-	MouseSensitivity = FMath::Clamp(Sensitivity, 0.1f, 10.0f);
-	SaveConfig();
-}
-
-float UPlayerGameUserSettings::GetMouseSensitivity() const
-{
-	return MouseSensitivity;
+	FIntPoint ResolutionPoint = GetScreenResolution();
+	return FString::Printf(TEXT("%dx%d"), ResolutionPoint.X, ResolutionPoint.Y);
 }

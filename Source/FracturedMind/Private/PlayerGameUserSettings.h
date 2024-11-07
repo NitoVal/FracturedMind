@@ -12,17 +12,20 @@
 UCLASS()
 class UPlayerGameUserSettings : public UGameUserSettings
 {
-	GENERATED_BODY()
+	GENERATED_UCLASS_BODY()
+
 public:
 	UPROPERTY(Config)
-	float MasterVolume = 1.0f;
+	float Volume;
 
 	UPROPERTY(Config)
-	float MouseSensitivity = 1.0f;
+	float Sensitivity;
 
-	void SetMasterVolume(float Volume);
-	float GetMasterVolume() const;
+	UPROPERTY(Config)
+	bool bIsFPSShown;
+	
+	UFUNCTION()
+	static UPlayerGameUserSettings* GetPlayerGameUserSettings();
 
-	void SetMouseSensitivity(float Sensitivity);
-	float GetMouseSensitivity() const;
+	FString GetResolution() const;
 };
