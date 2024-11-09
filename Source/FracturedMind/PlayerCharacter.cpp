@@ -107,6 +107,14 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 }
 
+void APlayerCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	if (OtherActor->IsA(ACollectible::StaticClass()))
+	{
+		OtherActor->Destroy();
+	}
+}
+
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
@@ -134,7 +142,7 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 }
 void APlayerCharacter::SetSensitivity(float NewSensitivity)
 {
-	Sensitivity = FMath::Clamp(NewSensitivity, 0.1f, 5.0f); // Clamp for safety
+	Sensitivity = FMath::Clamp(NewSensitivity, 0.1f, 5.0f);
 }
 void APlayerCharacter::Interact()
 {
