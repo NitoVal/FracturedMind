@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Collectible.generated.h"
 
+class USphereComponent;
+
 UCLASS()
 class ACollectible : public AActor
 {
@@ -19,8 +21,11 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	UStaticMeshComponent* CollectibleMeshComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	USphereComponent* CollectibleCollision;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Collectible")
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category= "Collectible")
 	FDataTableRowHandle Collectible;
 protected:
 	virtual void BeginPlay() override;

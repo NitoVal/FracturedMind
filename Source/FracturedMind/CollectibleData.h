@@ -15,5 +15,8 @@ struct FRACTUREDMIND_API FCollectibleData : public FTableRowBase
 	FText Description;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSoftObjectPtr<UStaticMesh> CollectibleModel;
+	UStaticMesh* CollectibleModel;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UMaterial* ModelMaterial;
 };
