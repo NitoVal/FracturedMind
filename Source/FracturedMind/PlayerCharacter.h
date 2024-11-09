@@ -79,6 +79,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | BigItems")
 	ABigItems* HandBigItem;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | Collectibles")
+	TArray<ACollectible*> Collectibles;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Player | Settings")
 	float Sensitivity = 1.0f;
 	

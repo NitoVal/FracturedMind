@@ -111,6 +111,8 @@ void APlayerCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	if (OtherActor->IsA(ACollectible::StaticClass()))
 	{
+		ACollectible* Collectible = Cast<ACollectible>(OtherActor);
+		Collectibles.Add(Collectible);
 		OtherActor->Destroy();
 	}
 }
