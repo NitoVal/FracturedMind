@@ -64,6 +64,13 @@ void APlayerCharacter::BeginPlay()
 		PauseWidget->AddToViewport();
 		PauseWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
+	//Get settings when starting game
+	if (SettingsWidgetClass)
+	{
+		UUserWidget* UserWidget = CreateWidget<UUserWidget>(GetWorld(), SettingsWidgetClass);
+		UserWidget->AddToViewport();
+		UserWidget->RemoveFromParent();
+	}
 }
 
 // Called every frame

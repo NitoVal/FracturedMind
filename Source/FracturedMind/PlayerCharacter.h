@@ -69,6 +69,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
 	TSubclassOf<UUserWidget> PauseWidgetClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
+	TSubclassOf<UUserWidget> SettingsWidgetClass;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | Item")
 	AItem* Hand;
 
