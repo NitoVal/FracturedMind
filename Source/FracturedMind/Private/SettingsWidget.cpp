@@ -103,7 +103,6 @@ void USettingsWidget::SetShowFPS(bool State)
 
 void USettingsWidget::ApplySettings()
 {
-	//APPLY THE GODDAMN SETTINGS
 	UPlayerGameUserSettings* PlayerGameUserSettings = Cast<UPlayerGameUserSettings>(GEngine->GetGameUserSettings());
 	if (PlayerGameUserSettings)
 	{
