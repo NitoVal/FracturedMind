@@ -9,9 +9,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "InteractionInterface.h"
-#include "Item.h"
+#include "Item.h" 
 #include "Private/BigItems.h"
-#include "TimerManager.h"
+#include "TimerManager.h"  
 #include "GameFramework/Actor.h"
 
 // Sets default values
@@ -45,6 +45,7 @@ APlayerCharacter::APlayerCharacter()
 	InspectPosition = CreateDefaultSubobject<USceneComponent>(TEXT("InspectPosition"));
 	InspectPosition->SetupAttachment(FirstPersonCameraComponent);
 }
+
 
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
@@ -85,9 +86,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	if (Hand)
 	{
 		HandPosition->SetRelativeRotation(Hand->HoldRotation);
-	}
-	 
-	 AdjustItemScale(); 
+	} 
 }
 
 // Called to bind functionality to input
@@ -207,16 +206,16 @@ void APlayerCharacter::Pickup(AItem* Item)
 	}
 }
 
-void APlayerCharacter::PickupBigItem(ABigItems* BigItems) // Called in Class BigItems so the called scene in the character bp is different
+void APlayerCharacter::PickupBigItem(ABigItems* BigItems)  // Called in Class BigItems so the called scene in the character bp is different
 {
 	//Check if the player has no item  
 	if (!Hand && !HandBigItem)
 	{
-		HandBigItem = BigItems;
+		HandBigItem = BigItems; 
 		HandBigItem->AttachToComponent(HandPositionBigItem,FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 		HandBigItem->SetActorLocation(HandPositionBigItem->GetComponentLocation());
 	}
-}
+} 
 
 void APlayerCharacter::PlaceBigItem()
 {
@@ -238,30 +237,7 @@ void APlayerCharacter::PlaceBigItem()
 		HandBigItem = nullptr; 
 	}
 
-}
-
-void APlayerCharacter::AdjustItemScale()
-{
-	if (!Hand && HandBigItem)
-	{
-		FRotator CameraRotation = FirstPersonCameraComponent->GetComponentRotation();
-		float CameraPitch = CameraRotation.Pitch;
-
-		static float LastPitch = CameraPitch;
-		static float ScaleDelta = 1.0f; 
-		float PitchDifference = CameraPitch - LastPitch;
-
-		ScaleDelta += PitchDifference * 0.1f; 
-		ScaleDelta = FMath::Clamp(ScaleDelta, 0.1f, 8.f);
-
-		FVector NewScale = HandBigItem->GetActorScale3D();
-		NewScale = FVector(ScaleDelta, ScaleDelta, ScaleDelta); 
-		HandBigItem->SetActorScale3D(NewScale); 
-		LastPitch = CameraPitch;
-		
-		bIsItemReleased = false;
-	}
-}
+} 
 
 void APlayerCharacter::Drop()
 {

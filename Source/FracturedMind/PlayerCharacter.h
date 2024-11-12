@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "GameFramework/Character.h" 
 #include "Private/Collectible.h"
 #include "PlayerCharacter.generated.h"
 
@@ -16,6 +16,7 @@ class USkeletalMeshComponent;
 class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
+class ATerminal;
 struct FInputActionValue;
 
 UCLASS()
@@ -83,13 +84,13 @@ public:
 	TSubclassOf<UUserWidget> PauseWidgetClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
-	TSubclassOf<UUserWidget> SettingsWidgetClass;
+	TSubclassOf<UUserWidget> SettingsWidgetClass;  
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | Item")
 	AItem* Hand;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | BigItems")
-	ABigItems* HandBigItem;
+	ABigItems* HandBigItem; 
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | Collectibles")
 	TArray<ACollectible*> Collectibles;
@@ -101,8 +102,7 @@ public:
 	
 	void SetSensitivity(float NewSensitivity);
     void PickupBigItem(ABigItems* BigItems);
-	void PlaceBigItem();
-	void AdjustItemScale();   
+	void PlaceBigItem(); 
 	void Pickup(AItem* Item);
 	void Pause();
 protected:
