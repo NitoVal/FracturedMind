@@ -253,6 +253,7 @@ void APlayerCharacter::EnterInspect()
 
 		PlayerWidget->SetExitInspectionPromptVisibility(true);
 		PlayerWidget->SetInspectDescriptionText(true, CurrentInspectObject);
+		
 		auto PlayerController = Cast<APlayerController>(GetController());
 		auto InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		InputSubsystem->RemoveMappingContext(DefaultMappingContext);
@@ -273,6 +274,7 @@ void APlayerCharacter::ExitInspect()
 
 		PlayerWidget->SetExitInspectionPromptVisibility(false);
 		PlayerWidget->SetInspectDescriptionText(false, CurrentInspectObject);
+		
 		auto PlayerController = Cast<APlayerController>(GetController());
 		auto InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		InputSubsystem->RemoveMappingContext(InspectMappingContext);

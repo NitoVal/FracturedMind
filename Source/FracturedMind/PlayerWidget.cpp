@@ -52,15 +52,20 @@ void UPlayerWidget::SetExitInspectionPromptVisibility(bool bIsVisible)
 
 void UPlayerWidget::SetInspectDescriptionText(bool bIsVisible, AActor* Collectible)
 {
-	if (InspectDescriptionText)
+	if (InspectDescriptionText && CollectibleNameText)
 	{
 		ESlateVisibility DesiredVisibility  = bIsVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+		CollectibleNameText->SetVisibility(DesiredVisibility);
 		InspectDescriptionText->SetVisibility(DesiredVisibility);
+		
 		if (bIsVisible && Collectible)
 		{
 			ACollectible* CurrentCollectible = Cast<ACollectible>(Collectible);
 			if (CurrentCollectible)
+			{
+				CollectibleNameText->SetText(CurrentCollectible->Collectible.GetRow<FCollectibleData>("Collectible Data")->Name);
 				InspectDescriptionText->SetText(CurrentCollectible->Collectible.GetRow<FCollectibleData>("Collectible Data")->Description);
+			}
 		}
 	}
 }
