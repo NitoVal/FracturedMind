@@ -34,9 +34,15 @@ class FRACTUREDMIND_API APlayerCharacter : public ACharacter
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	USceneComponent* HandPositionBigItem;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	USceneComponent* InspectPosition;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* InspectMappingContext;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
@@ -58,6 +64,12 @@ class FRACTUREDMIND_API APlayerCharacter : public ACharacter
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PauseAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* ExitInspectAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* RotateAction;
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
@@ -101,11 +113,15 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Interact();
-	
 	void Drop();
+	void EnterInspect();
+	void ExitInspect();
+	void RotateInspect(const FInputActionValue& Value);
 private:
+	bool bIsInspecting;
 	TScriptInterface<IInteractionInterface> CurrentInteractable;
-
+	AActor* CurrentInspectObject;
+	FRotator CurrentInspectRotation;
 	UUserWidget* PauseWidget;
 	
 	void PerformLineTrace();

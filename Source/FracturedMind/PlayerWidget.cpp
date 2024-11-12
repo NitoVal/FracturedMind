@@ -3,6 +3,8 @@
 
 #include "PlayerWidget.h"
 
+#include "CollectibleData.h"
+#include "Private/Collectible.h"
 #include "Components/TextBlock.h"
 
 void UPlayerWidget::NativeConstruct()
@@ -36,6 +38,30 @@ void UPlayerWidget::SetInteractPromptVisibility(bool bIsVisible)
 	{
 		ESlateVisibility DesiredVisibility  = bIsVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
 		InteractionPromptText->SetVisibility(DesiredVisibility);
+	}
+}
+
+void UPlayerWidget::SetExitInspectionPromptVisibility(bool bIsVisible)
+{
+	if (ExitInspectionPromptText)
+	{
+		ESlateVisibility DesiredVisibility  = bIsVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+		ExitInspectionPromptText->SetVisibility(DesiredVisibility);
+	}
+}
+
+void UPlayerWidget::SetInspectDescriptionText(bool bIsVisible, AActor* Collectible)
+{
+	if (InspectDescriptionText)
+	{
+		ESlateVisibility DesiredVisibility  = bIsVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+		InspectDescriptionText->SetVisibility(DesiredVisibility);
+		if (bIsVisible && Collectible)
+		{
+			ACollectible* CurrentCollectible = Cast<ACollectible>(Collectible);
+			if (CurrentCollectible)
+				InspectDescriptionText->SetText(CurrentCollectible->Collectible.GetRow<FCollectibleData>("Collectible Data")->Description);
+		}
 	}
 }
 
