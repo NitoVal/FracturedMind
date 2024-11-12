@@ -41,6 +41,9 @@ APlayerCharacter::APlayerCharacter()
 
 	HandPositionBigItem = CreateDefaultSubobject<USceneComponent>(TEXT("HandPositionBigItem"));
 	HandPositionBigItem->SetupAttachment(FirstPersonCameraComponent);
+
+	InspectPosition = CreateDefaultSubobject<USceneComponent>(TEXT("InspectPosition"));
+	InspectPosition->SetupAttachment(FirstPersonCameraComponent);
 }
 
 // Called when the game starts or when spawned
@@ -71,6 +74,7 @@ void APlayerCharacter::BeginPlay()
 		UserWidget->AddToViewport();
 		UserWidget->RemoveFromParent();
 	}
+	CurrentInspectRotation = InspectPosition->GetRelativeRotation();
 }
 
 // Called every frame
@@ -108,6 +112,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(DropAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Drop);
 		EnhancedInputComponent->BindAction(PlaceItemAction, ETriggerEvent::Triggered, this, &APlayerCharacter::PlaceBigItem);
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Pause);
+		EnhancedInputComponent->BindAction(ExitInspectAction, ETriggerEvent::Triggered, this, &APlayerCharacter::ExitInspect);
+		EnhancedInputComponent->BindAction(RotateAction, ETriggerEvent::Triggered, this, &APlayerCharacter::RotateInspect);
 	}
 }
 
@@ -115,7 +121,10 @@ void APlayerCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	if (OtherActor->IsA(ACollectible::StaticClass()))
 	{
-		OtherActor->Destroy();
+		ACollectible* Collectible = Cast<ACollectible>(OtherActor);
+		Collectibles.Add(Collectible);
+		CurrentInspectObject = Collectible;
+		EnterInspect();
 	}
 }
 
@@ -263,6 +272,57 @@ void APlayerCharacter::Drop()
 		Hand->SetActorEnableCollision(true);
 		Hand = nullptr;
 	}
+}
+
+void APlayerCharacter::EnterInspect()
+{
+	if (!bIsInspecting && CurrentInspectObject)
+	{
+		bIsInspecting = true;
+
+		InspectPosition->SetRelativeRotation(FRotator::ZeroRotator);
+		CurrentInspectObject->AttachToComponent(InspectPosition, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
+		PlayerWidget->SetExitInspectionPromptVisibility(true);
+		PlayerWidget->SetInspectDescriptionText(true, CurrentInspectObject);
+		auto PlayerController = Cast<APlayerController>(GetController());
+		auto InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		InputSubsystem->RemoveMappingContext(DefaultMappingContext);
+		InputSubsystem->AddMappingContext(InspectMappingContext, 0);
+	}
+}
+
+void APlayerCharacter::ExitInspect()
+{
+	if (bIsInspecting)
+	{
+		bIsInspecting = false;
+		
+		CurrentInspectObject->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		CurrentInspectObject->SetActorHiddenInGame(true);
+		CurrentInspectObject->SetActorEnableCollision(false);
+		CurrentInspectObject = nullptr;
+
+		PlayerWidget->SetExitInspectionPromptVisibility(false);
+		PlayerWidget->SetInspectDescriptionText(false, CurrentInspectObject);
+		auto PlayerController = Cast<APlayerController>(GetController());
+		auto InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		InputSubsystem->RemoveMappingContext(InspectMappingContext);
+		InputSubsystem->AddMappingContext(DefaultMappingContext, 0);
+	}
+}
+
+void APlayerCharacter::RotateInspect(const FInputActionValue& Value)
+{
+	FVector2D InputVector = Value.Get<FVector2D>();
+	
+	float Pitch = InputVector.Y * -1.0f;
+	float Yaw = InputVector.X;
+	
+	CurrentInspectRotation.Pitch += Pitch;
+	CurrentInspectRotation.Yaw += Yaw;
+	
+	InspectPosition->SetRelativeRotation(CurrentInspectRotation);
 }
 
 void APlayerCharacter::PerformLineTrace()

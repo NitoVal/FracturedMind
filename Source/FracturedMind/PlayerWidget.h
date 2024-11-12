@@ -23,10 +23,22 @@ public:
 	
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* FPSText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* InspectDescriptionText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* ExitInspectionPromptText;
 	
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void SetInteractPromptVisibility(bool bIsVisible);
+	
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void SetExitInspectionPromptVisibility(bool bIsVisible);
 
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void SetInspectDescriptionText(bool bIsVisible, AActor* Collectible);
+	
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void SetFPSCounterVisibility(bool bIsVisible);
 	

@@ -34,9 +34,15 @@ class FRACTUREDMIND_API APlayerCharacter : public ACharacter
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	USceneComponent* HandPositionBigItem;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	USceneComponent* InspectPosition;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* InspectMappingContext;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
@@ -58,6 +64,12 @@ class FRACTUREDMIND_API APlayerCharacter : public ACharacter
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PauseAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* ExitInspectAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* RotateAction;
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
@@ -79,6 +91,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | BigItems")
 	ABigItems* HandBigItem;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | Collectibles")
+	TArray<ACollectible*> Collectibles;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Player | Settings")
 	float Sensitivity = 1.0f;
 	
@@ -98,10 +113,25 @@ protected:
 
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+<<<<<<< HEAD
 	void Interact(); 
+=======
+	void Interact();
+>>>>>>> origin/Val's_Branch
 	void Drop();
+	void EnterInspect();
+	void ExitInspect();
+	void RotateInspect(const FInputActionValue& Value);
 private:
+	bool bIsInspecting;
 	TScriptInterface<IInteractionInterface> CurrentInteractable;
+<<<<<<< HEAD
 	UUserWidget* PauseWidget; 
+=======
+	AActor* CurrentInspectObject;
+	FRotator CurrentInspectRotation;
+	UUserWidget* PauseWidget;
+	
+>>>>>>> origin/Val's_Branch
 	void PerformLineTrace();
 };
