@@ -25,7 +25,7 @@ AItem::AItem()
 void AItem::BeginPlay()
 {
 	Super::BeginPlay();
-
+	OriginalTransform = GetActorTransform();
 }
 
 // Called every frame

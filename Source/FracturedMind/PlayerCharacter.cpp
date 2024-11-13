@@ -238,6 +238,7 @@ void APlayerCharacter::Drop()
 	{
 		Hand->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		Hand->SetActorEnableCollision(true);
+		Hand->SetActorTransform(Hand->OriginalTransform);
 		Hand = nullptr;
 	}
 }
