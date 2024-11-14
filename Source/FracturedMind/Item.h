@@ -21,9 +21,11 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	UStaticMeshComponent* ItemMeshComponent;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Item | Hold Rotation")
 	FRotator HoldRotation;
+
+	FTransform OriginalTransform;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

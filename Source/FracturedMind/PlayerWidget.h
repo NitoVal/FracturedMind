@@ -25,6 +25,9 @@ public:
 	UTextBlock* FPSText;
 
 	UPROPERTY(meta = (BindWidget))
+	UTextBlock* CollectibleNameText;
+	
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* InspectDescriptionText;
 
 	UPROPERTY(meta = (BindWidget))
