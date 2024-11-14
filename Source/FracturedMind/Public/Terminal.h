@@ -6,7 +6,9 @@
 #include "FracturedMind/InteractionInterface.h"
 #include "GameFramework/Actor.h"
 #include "Components/WidgetComponent.h"
-#include "Terminal.generated.h"
+#include "Terminal.generated.h" 
+
+class IPuzzleCompletionEventInterface;
 
 UCLASS()
 class FRACTUREDMIND_API ATerminal : public AActor, public IInteractionInterface
@@ -29,34 +31,29 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	UStaticMeshComponent* ScreenMeshComponent;
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Code")
-	TArray<int32> Code; 
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Code")
-	TArray<int32> CurrentCodeInput;
-
-	UFUNCTION(BlueprintCallable, Category = "Code")
-	void EnterCode(int32 CodeDigit);
-
 	UFUNCTION(BlueprintCallable, Category = "Code")
 	void CheckCode();
 
+	bool ViewportCodeAdded;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door Reference")
-	ADoor* LinkedDoor;
+	ADoor* LinkedDoor1;
 
-	virtual void Interact() override;
-	virtual bool IsInteractable() override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door Reference")
+	ADoor* LinkedDoor2; 
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
-	TSubclassOf<UUserWidget> WidgetCodeClass;
-
-	UWidgetCode* WidgetCode;
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;  
+	virtual bool IsInteractable() override; 
 
 public:
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float DeltaTime) override; 
+	virtual void Interact() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<UUserWidget> WidgetCodeClass;  
+	UWidgetCode* WidgetCode; 
+	
 };

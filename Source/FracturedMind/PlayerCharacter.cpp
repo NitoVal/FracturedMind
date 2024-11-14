@@ -13,6 +13,8 @@
 #include "Private/BigItems.h"
 #include "TimerManager.h"  
 #include "GameFramework/Actor.h"
+#include "Public/Terminal.h"  
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -53,7 +55,7 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 	APlayerController* PlayerController = Cast<APlayerController>(GEngine->GetFirstLocalPlayerController(GetWorld()));
 	PlayerController->SetInputMode(FInputModeGameOnly());
-	PlayerController->bShowMouseCursor = false;
+	PlayerController->bShowMouseCursor = false; 
 	
 	if (PlayerWidgetClass)
 	{
@@ -75,7 +77,7 @@ void APlayerCharacter::BeginPlay()
 		UserWidget->AddToViewport();
 		UserWidget->RemoveFromParent();
 	}
-	CurrentInspectRotation = InspectPosition->GetRelativeRotation();
+	CurrentInspectRotation = InspectPosition->GetRelativeRotation(); 
 }
 
 // Called every frame
@@ -158,11 +160,12 @@ void APlayerCharacter::SetSensitivity(float NewSensitivity)
 }
 void APlayerCharacter::Interact()
 {
+	
 	if (CurrentInteractable && CurrentInteractable->IsInteractable())
 	{
 		CurrentInteractable->Interact();
-		PlayerWidget->SetInteractPromptVisibility(false);
-	}
+		PlayerWidget->SetInteractPromptVisibility(false); 
+	} 
 }
 
 void APlayerCharacter::Pause()

@@ -1,5 +1,4 @@
-#include "Terminal.h"
-#include "WidgetCode.h"
+#include "Terminal.h" 
 #include "Blueprint/UserWidget.h"
 #include "FracturedMind/Door.h"
 #include "FracturedMind/PlayerCharacter.h"
@@ -25,14 +24,19 @@ ATerminal::ATerminal()
 	ScreenMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ScreenMeshComponent"));
 	ScreenMeshComponent->SetupAttachment(RootComponent);
 
-	Code = {1, 2, 3, 4};
-	CurrentCodeInput = {};
+	ViewportCodeAdded = false;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClassFinder(TEXT("FracturedMind/WidgetCode"));
+	if (WidgetClassFinder.Succeeded())
+	{
+		WidgetCodeClass = WidgetClassFinder.Class;
+	}
 }
 
 // Called when the game starts or when spawned
 void ATerminal::BeginPlay()
 {
-	Super::BeginPlay();
+	Super::BeginPlay(); 
 }
 
 // Called every frame
@@ -43,36 +47,56 @@ void ATerminal::Tick(float DeltaTime)
 
 void ATerminal::Interact()
 {
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-	PlayerController->SetInputMode(FInputModeUIOnly());
-	UUserWidget* UserWidget = CreateWidget<UUserWidget>(GetWorld(), WidgetCodeClass);
-	WidgetCode = Cast<UWidgetCode>(WidgetCode);
-	WidgetCode->AddToViewport();
-}
+	if (WidgetCode && WidgetCode->GetCorrectCode())
+	{ 
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Le bon code a déjà été entré."));
+		return; 
+	} 
+		if (WidgetCodeClass)   
+		{ 
+			if (UUserWidget* UserWidget = CreateWidget<UUserWidget>(GetWorld(), WidgetCodeClass))  
+			{
+				WidgetCode = Cast<UWidgetCode>(UserWidget);
+				if (WidgetCode) 
+				{ 
+					WidgetCode->SetOwningTerminal(this);
+					WidgetCode->AddToViewport(); 
+					APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+					if (PlayerController)
+					{
+						PlayerController->bShowMouseCursor = true;   
+						PlayerController->SetInputMode(FInputModeUIOnly());
+					}
+				} 
+			}
+		} 
+ 
+} 
 
 bool ATerminal::IsInteractable()
 {
 	return true;
-}
-
-void ATerminal::EnterCode(int32 CodeDigit)
-{
-	CurrentCodeInput.Add(CodeDigit);
-
-	if (CurrentCodeInput.Num() == Code.Num())
-	{
-		CheckCode();
-	}
-}
+} 
 
 void ATerminal::CheckCode()
-{
-	if (CurrentCodeInput == Code && LinkedDoor)
+{ 
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	
+	if (PlayerController)
 	{
-		LinkedDoor->OpenDoor();
-	}
-	else
-	{
-		CurrentCodeInput.Empty();
-	}
+		PlayerController->bShowMouseCursor = false;
+		PlayerController->SetInputMode(FInputModeGameOnly());
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Jeu remis"));
+
+		if(LinkedDoor1 && LinkedDoor2)
+		{
+			if(WidgetCode && WidgetCode->GetCorrectCode())
+			{ 
+				LinkedDoor1->Activate();
+				LinkedDoor2->Activate();
+			} 
+		} 
+	} 
 }
+ 

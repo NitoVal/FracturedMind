@@ -5,8 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h" 
 #include "Private/Collectible.h"
+#include "Terminal.h"
 #include "PlayerCharacter.generated.h"
 
+class ATerminal;
 class AItem;
 class ABigItems;
 class IInteractionInterface;
@@ -15,8 +17,7 @@ class UInputComponent;
 class USkeletalMeshComponent;
 class UCameraComponent;
 class UInputAction;
-class UInputMappingContext;
-class ATerminal;
+class UInputMappingContext; 
 struct FInputActionValue;
 
 UCLASS()
@@ -84,8 +85,15 @@ public:
 	TSubclassOf<UUserWidget> PauseWidgetClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
-	TSubclassOf<UUserWidget> SettingsWidgetClass;  
+	TSubclassOf<UUserWidget> SettingsWidgetClass;
+ 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
+	TSubclassOf<UUserWidget> WidgetCodeClass; 
+	UWidgetCode* WidgetCode;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	ATerminal* TargetTerminal;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | Item")
 	AItem* Hand;
 
@@ -98,7 +106,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Player | Settings")
 	float Sensitivity = 1.0f;
 	
-	UPlayerWidget* PlayerWidget;
+	UPlayerWidget* PlayerWidget;  
 	
 	void SetSensitivity(float NewSensitivity);
     void PickupBigItem(ABigItems* BigItems);
@@ -112,26 +120,19 @@ protected:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 	void Move(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value);
-<<<<<<< HEAD
-	void Interact(); 
-=======
-	void Interact();
->>>>>>> origin/Val's_Branch
+	void Look(const FInputActionValue& Value); 
+	void Interact();   
 	void Drop();
 	void EnterInspect();
 	void ExitInspect();
 	void RotateInspect(const FInputActionValue& Value);
 private:
 	bool bIsInspecting;
-	TScriptInterface<IInteractionInterface> CurrentInteractable;
-<<<<<<< HEAD
-	UUserWidget* PauseWidget; 
-=======
+	TScriptInterface<IInteractionInterface> CurrentInteractable; 
+	UUserWidget* PauseWidget;  
 	AActor* CurrentInspectObject;
 	FRotator CurrentInspectRotation;
-	UUserWidget* PauseWidget;
-	
->>>>>>> origin/Val's_Branch
+	ATerminal* TerminalReference;
+	 
 	void PerformLineTrace();
 };
