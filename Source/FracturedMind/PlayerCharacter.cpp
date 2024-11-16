@@ -219,9 +219,9 @@ void APlayerCharacter::PlaceBigItem()
 	//Check if the player have an item
 	if (!Hand && HandBigItem)
 	{
-		FVector Start = FirstPersonCameraComponent->GetComponentLocation();
-		FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
-		FVector PlaceLocation = Start + (ForwardVector * 200.f);
+		const FVector Start = FirstPersonCameraComponent->GetComponentLocation();
+		const FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
+		const FVector PlaceLocation = Start + (ForwardVector * 200.f);
 		
 		HandBigItem->SetActorLocation(PlaceLocation);
 		
@@ -254,9 +254,9 @@ void APlayerCharacter::EnterInspect()
 
 		PlayerWidget->SetExitInspectionPromptVisibility(true);
 		PlayerWidget->SetInspectDescriptionText(true, CurrentInspectObject);
-		
-		auto PlayerController = Cast<APlayerController>(GetController());
-		auto InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+
+		const auto PlayerController = Cast<APlayerController>(GetController());
+		const auto InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		InputSubsystem->RemoveMappingContext(DefaultMappingContext);
 		InputSubsystem->AddMappingContext(InspectMappingContext, 0);
 	}
@@ -275,9 +275,9 @@ void APlayerCharacter::ExitInspect()
 
 		PlayerWidget->SetExitInspectionPromptVisibility(false);
 		PlayerWidget->SetInspectDescriptionText(false, CurrentInspectObject);
-		
-		auto PlayerController = Cast<APlayerController>(GetController());
-		auto InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+
+		const auto PlayerController = Cast<APlayerController>(GetController());
+		const auto InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		InputSubsystem->RemoveMappingContext(InspectMappingContext);
 		InputSubsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
@@ -285,10 +285,10 @@ void APlayerCharacter::ExitInspect()
 
 void APlayerCharacter::RotateInspect(const FInputActionValue& Value)
 {
-	FVector2D InputVector = Value.Get<FVector2D>();
-	
-	float Pitch = InputVector.Y * -1.0f;
-	float Yaw = InputVector.X;
+	const FVector2D InputVector = Value.Get<FVector2D>();
+
+	const float Pitch = InputVector.Y * -1.0f;
+	const float Yaw = InputVector.X;
 	
 	CurrentInspectRotation.Pitch += Pitch;
 	CurrentInspectRotation.Yaw += Yaw;

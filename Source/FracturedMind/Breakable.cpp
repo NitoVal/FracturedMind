@@ -34,7 +34,7 @@ void ABreakable::Tick(float DeltaTime)
 
 void ABreakable::Interact()
 {
-	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	const APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (PlayerCharacter->Hand)
 	{
 		if (PlayerCharacter->Hand->Tags.Contains(RequiredTag))
