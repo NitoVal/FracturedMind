@@ -17,7 +17,7 @@
 void USettingsWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	UPlayerGameUserSettings* PlayerGameUserSettings = Cast<UPlayerGameUserSettings>(GEngine->GetGameUserSettings());
+	const UPlayerGameUserSettings* PlayerGameUserSettings = Cast<UPlayerGameUserSettings>(GEngine->GetGameUserSettings());
 	if (!PlayerGameUserSettings)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red ,"Failed to find game user settings");
@@ -93,6 +93,7 @@ void USettingsWidget::SetSensitivity(float Sensitivity)
 
 void USettingsWidget::SetShowFPS(bool State)
 {
+	GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red, "It goes here");
 	APlayerCharacter* Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (Player)
 		Player->PlayerWidget->SetFPSCounterVisibility(State);

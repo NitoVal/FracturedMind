@@ -9,12 +9,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "InteractionInterface.h"
-#include "Item.h" 
+#include "Item.h"
 #include "Private/BigItems.h"
-#include "TimerManager.h"  
-#include "GameFramework/Actor.h"
-#include "Public/Terminal.h"  
-#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -48,14 +44,13 @@ APlayerCharacter::APlayerCharacter()
 	InspectPosition->SetupAttachment(FirstPersonCameraComponent);
 }
 
-
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	APlayerController* PlayerController = Cast<APlayerController>(GEngine->GetFirstLocalPlayerController(GetWorld()));
 	PlayerController->SetInputMode(FInputModeGameOnly());
-	PlayerController->bShowMouseCursor = false; 
+	PlayerController->bShowMouseCursor = false;
 	
 	if (PlayerWidgetClass)
 	{
@@ -77,7 +72,7 @@ void APlayerCharacter::BeginPlay()
 		UserWidget->AddToViewport();
 		UserWidget->RemoveFromParent();
 	}
-	CurrentInspectRotation = InspectPosition->GetRelativeRotation(); 
+	CurrentInspectRotation = InspectPosition->GetRelativeRotation();
 }
 
 // Called every frame
@@ -88,7 +83,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	if (Hand)
 	{
 		HandPosition->SetRelativeRotation(Hand->HoldRotation);
-	} 
+	}
 }
 
 // Called to bind functionality to input
@@ -160,12 +155,11 @@ void APlayerCharacter::SetSensitivity(float NewSensitivity)
 }
 void APlayerCharacter::Interact()
 {
-	
 	if (CurrentInteractable && CurrentInteractable->IsInteractable())
 	{
 		CurrentInteractable->Interact();
-		PlayerWidget->SetInteractPromptVisibility(false); 
-	} 
+		PlayerWidget->SetInteractPromptVisibility(false);
+	}
 }
 
 void APlayerCharacter::Pause()
@@ -209,38 +203,33 @@ void APlayerCharacter::Pickup(AItem* Item)
 	}
 }
 
-void APlayerCharacter::PickupBigItem(ABigItems* BigItems)  // Called in Class BigItems so the called scene in the character bp is different
+void APlayerCharacter::PickupBigItem(ABigItems* BigItems) // Called in Class BigItems so the called scene in the character bp is different
 {
 	//Check if the player has no item  
 	if (!Hand && !HandBigItem)
 	{
-		HandBigItem = BigItems; 
+		HandBigItem = BigItems;
 		HandBigItem->AttachToComponent(HandPositionBigItem,FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 		HandBigItem->SetActorLocation(HandPositionBigItem->GetComponentLocation());
 	}
-} 
+}
 
 void APlayerCharacter::PlaceBigItem()
 {
 	//Check if the player have an item
 	if (!Hand && HandBigItem)
 	{
-		FVector Start = FirstPersonCameraComponent->GetComponentLocation();
-		FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
-		FVector PlaceLocation = Start + (ForwardVector * 200.f);
-        
-		FRotator CameraRotation = FirstPersonCameraComponent->GetComponentRotation();
-		FRotator PlaceRotation = FRotator(0.f, CameraRotation.Yaw, 0.f);
-
+		const FVector Start = FirstPersonCameraComponent->GetComponentLocation();
+		const FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
+		const FVector PlaceLocation = Start + (ForwardVector * 200.f);
+		
 		HandBigItem->SetActorLocation(PlaceLocation);
-		HandBigItem->SetActorRotation(PlaceRotation);  
 		
 		HandBigItem->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-		HandBigItem->SetActorEnableCollision(true);  
-		HandBigItem = nullptr; 
+		HandBigItem->SetActorEnableCollision(true); 
+		HandBigItem = nullptr;  
 	}
-
-} 
+}
 
 void APlayerCharacter::Drop()
 {
@@ -265,9 +254,9 @@ void APlayerCharacter::EnterInspect()
 
 		PlayerWidget->SetExitInspectionPromptVisibility(true);
 		PlayerWidget->SetInspectDescriptionText(true, CurrentInspectObject);
-		
-		auto PlayerController = Cast<APlayerController>(GetController());
-		auto InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+
+		const auto PlayerController = Cast<APlayerController>(GetController());
+		const auto InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		InputSubsystem->RemoveMappingContext(DefaultMappingContext);
 		InputSubsystem->AddMappingContext(InspectMappingContext, 0);
 	}
@@ -286,9 +275,9 @@ void APlayerCharacter::ExitInspect()
 
 		PlayerWidget->SetExitInspectionPromptVisibility(false);
 		PlayerWidget->SetInspectDescriptionText(false, CurrentInspectObject);
-		
-		auto PlayerController = Cast<APlayerController>(GetController());
-		auto InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+
+		const auto PlayerController = Cast<APlayerController>(GetController());
+		const auto InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		InputSubsystem->RemoveMappingContext(InspectMappingContext);
 		InputSubsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
@@ -296,10 +285,10 @@ void APlayerCharacter::ExitInspect()
 
 void APlayerCharacter::RotateInspect(const FInputActionValue& Value)
 {
-	FVector2D InputVector = Value.Get<FVector2D>();
-	
-	float Pitch = InputVector.Y * -1.0f;
-	float Yaw = InputVector.X;
+	const FVector2D InputVector = Value.Get<FVector2D>();
+
+	const float Pitch = InputVector.Y * -1.0f;
+	const float Yaw = InputVector.X;
 	
 	CurrentInspectRotation.Pitch += Pitch;
 	CurrentInspectRotation.Yaw += Yaw;

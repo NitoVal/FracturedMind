@@ -17,6 +17,6 @@ UPlayerGameUserSettings* UPlayerGameUserSettings::GetPlayerGameUserSettings()
 
 FString UPlayerGameUserSettings::GetResolution() const
 {
-	FIntPoint ResolutionPoint = GetScreenResolution();
+	const FIntPoint ResolutionPoint = GetScreenResolution();
 	return FString::Printf(TEXT("%dx%d"), ResolutionPoint.X, ResolutionPoint.Y);
 }

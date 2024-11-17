@@ -1,4 +1,5 @@
-#include "Terminal.h" 
+#include "FracturedMind/Public/Terminal.h"
+
 #include "Blueprint/UserWidget.h"
 #include "FracturedMind/Door.h"
 #include "FracturedMind/PlayerCharacter.h"

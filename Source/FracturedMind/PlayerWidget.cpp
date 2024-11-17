@@ -23,7 +23,7 @@ void UPlayerWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 		if (TimeAccumulator >= 1.0f)
 		{
-			int CurrentFPS = FrameCount / TimeAccumulator;
+			const int CurrentFPS = FrameCount / TimeAccumulator;
 			UpdateFPS(CurrentFPS);
 			
 			FrameCount = 0;
@@ -36,7 +36,7 @@ void UPlayerWidget::SetInteractPromptVisibility(bool bIsVisible)
 {
 	if (InteractionPromptText)
 	{
-		ESlateVisibility DesiredVisibility  = bIsVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+		const ESlateVisibility DesiredVisibility  = bIsVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
 		InteractionPromptText->SetVisibility(DesiredVisibility);
 	}
 }
@@ -54,7 +54,7 @@ void UPlayerWidget::SetInspectDescriptionText(bool bIsVisible, AActor* Collectib
 {
 	if (InspectDescriptionText && CollectibleNameText)
 	{
-		ESlateVisibility DesiredVisibility  = bIsVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+		const ESlateVisibility DesiredVisibility  = bIsVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
 		CollectibleNameText->SetVisibility(DesiredVisibility);
 		InspectDescriptionText->SetVisibility(DesiredVisibility);
 		
