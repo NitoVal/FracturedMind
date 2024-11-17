@@ -10,6 +10,7 @@
 
 class UBoxComponent;
 class UTimelineComponent;
+class ADoorCoded;
 
 UCLASS()
 class FRACTUREDMIND_API ADoor : public AActor, public IPuzzleCompletionEventInterface
@@ -57,7 +58,7 @@ protected:
 
 	virtual void Activate() override;
 private:
-
+	friend class ATerminal;
 	bool bIsOpen;
 
 	FVector InitialDoorLocation;

@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "GameFramework/Character.h" 
 #include "Private/Collectible.h"
+#include "Terminal.h"
 #include "PlayerCharacter.generated.h"
 
+class ATerminal;
 class AItem;
 class ABigItems;
 class IInteractionInterface;
@@ -15,7 +17,7 @@ class UInputComponent;
 class USkeletalMeshComponent;
 class UCameraComponent;
 class UInputAction;
-class UInputMappingContext;
+class UInputMappingContext; 
 struct FInputActionValue;
 
 UCLASS()
@@ -84,12 +86,19 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
 	TSubclassOf<UUserWidget> SettingsWidgetClass;
+ 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
+	TSubclassOf<UUserWidget> WidgetCodeClass; 
+	UWidgetCode* WidgetCode;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	ATerminal* TargetTerminal;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | Item")
 	AItem* Hand;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | BigItems")
-	ABigItems* HandBigItem;
+	ABigItems* HandBigItem; 
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | Collectibles")
 	TArray<ACollectible*> Collectibles;
@@ -97,11 +106,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Player | Settings")
 	float Sensitivity = 1.0f;
 	
-	UPlayerWidget* PlayerWidget;
+	UPlayerWidget* PlayerWidget;  
 	
 	void SetSensitivity(float NewSensitivity);
     void PickupBigItem(ABigItems* BigItems);
-	void PlaceBigItem();
+	void PlaceBigItem(); 
 	void Pickup(AItem* Item);
 	void Pause();
 protected:
@@ -111,18 +120,19 @@ protected:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 	void Move(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value);
-	void Interact();
+	void Look(const FInputActionValue& Value); 
+	void Interact();   
 	void Drop();
 	void EnterInspect();
 	void ExitInspect();
 	void RotateInspect(const FInputActionValue& Value);
 private:
 	bool bIsInspecting;
-	TScriptInterface<IInteractionInterface> CurrentInteractable;
+	TScriptInterface<IInteractionInterface> CurrentInteractable; 
+	UUserWidget* PauseWidget;  
 	AActor* CurrentInspectObject;
 	FRotator CurrentInspectRotation;
-	UUserWidget* PauseWidget;
-	
+	ATerminal* TerminalReference;
+	 
 	void PerformLineTrace();
 };
