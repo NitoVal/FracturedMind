@@ -12,7 +12,6 @@ class ARestartTeleporter : public AActor
 {
 	GENERATED_BODY()
 
-
 public:	
 	ARestartTeleporter();
 
@@ -26,6 +25,5 @@ public:
 	AActor* TeleportPosition;
 protected:
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 };

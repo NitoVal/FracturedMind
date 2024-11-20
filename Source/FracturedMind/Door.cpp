@@ -3,6 +3,7 @@
 
 #include "Door.h"
 
+#include "PlayerCharacter.h"
 #include "Components/AudioComponent.h"
 #include "Components/BoxComponent.h"
 
@@ -66,13 +67,13 @@ void ADoor::Tick(float DeltaTime)
 
 void ADoor::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (bIsUnlocked)
+	if (bIsUnlocked && OtherActor->IsA(APlayerCharacter::StaticClass()))
 		OpenDoor();
 }
 
 void ADoor::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,int32 OtherBodyIndex)
 {
-	if (bIsUnlocked)
+	if (bIsUnlocked && OtherActor->IsA(APlayerCharacter::StaticClass()))
 		CloseDoor();
 }
 

@@ -23,11 +23,6 @@ void ARestartTeleporter::BeginPlay()
 	
 }
 
-void ARestartTeleporter::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-}
-
 void ARestartTeleporter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	if (OtherActor->IsA(APlayerCharacter::StaticClass()) && TeleportPosition)
