@@ -303,6 +303,7 @@ void APlayerCharacter::PerformLineTrace()
 	const FVector End = Start + FirstPersonCameraComponent->GetForwardVector() * 200.f;
 
 	FCollisionObjectQueryParams ObjectQueryParams;
+	
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 
 	FCollisionQueryParams QueryParams;

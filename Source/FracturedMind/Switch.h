@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "InteractionInterface.h"
+#include "PuzzleCompletionEventInterface.h"
 #include "GameFramework/Actor.h"
 #include "Switch.generated.h"
 
 class IPuzzleCompletionEventInterface;
 
 UCLASS()
-class FRACTUREDMIND_API ASwitch : public AActor, public IInteractionInterface
+class FRACTUREDMIND_API ASwitch : public AActor, public IInteractionInterface, public IPuzzleCompletionEventInterface
 {
 	GENERATED_BODY()
-
 
 public:	
 	ASwitch();
@@ -22,9 +22,18 @@ public:
 	USceneComponent* DefaultSceneRoot;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	UStaticMeshComponent* SwitchMeshComponent;
+	UStaticMeshComponent* SwitchBaseMeshComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	UStaticMeshComponent* SwitchButtonMeshComponent;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Switch | Materials")
+	UMaterial* SwitchOnMaterial;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Switch | Materials")
+	UMaterial* SwitchOffMaterial;
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Completion Activators")
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Switch | Completion Activators")
 	TArray<AActor*> Activators;
 protected:
 	virtual void BeginPlay() override;
@@ -32,7 +41,8 @@ protected:
 
 	virtual void Interact() override;
 	virtual bool IsInteractable() override;
+	virtual void Activate() override;
 private:
-	UPROPERTY(EditAnywhere, Category="Button")
+	UPROPERTY(EditAnywhere, Category="Switch | Interactable")
 	bool bCanBePressed;
 };
