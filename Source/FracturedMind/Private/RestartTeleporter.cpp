@@ -22,7 +22,6 @@ void ARestartTeleporter::BeginPlay()
 	Super::BeginPlay();
 	
 }
-
 void ARestartTeleporter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	if (OtherActor->IsA(APlayerCharacter::StaticClass()) && TeleportPosition)

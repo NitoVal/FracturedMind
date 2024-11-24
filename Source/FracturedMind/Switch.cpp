@@ -11,8 +11,11 @@ ASwitch::ASwitch()
 	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
 	RootComponent = DefaultSceneRoot;
 
-	SwitchMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SwitchMeshComponent"));
-	SwitchMeshComponent->SetupAttachment(RootComponent);
+	SwitchBaseMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SwitchBaseMeshComponent"));
+	SwitchBaseMeshComponent->SetupAttachment(RootComponent);
+
+	SwitchButtonMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SwitchButtonMeshComponent"));
+	SwitchButtonMeshComponent->SetupAttachment(SwitchBaseMeshComponent);
 	
 	bCanBePressed = true;
 }
@@ -20,18 +23,17 @@ ASwitch::ASwitch()
 void ASwitch::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	SwitchButtonMeshComponent->SetMaterial(0, SwitchOffMaterial);
 }
 
 void ASwitch::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void ASwitch::Interact()
 {
-	//Activate every elements
+	//Activate every element
 	for (AActor* Actor : Activators)
 	{
 		//Check if the actor has the UPuzzleCompletionEventInterface
@@ -42,11 +44,20 @@ void ASwitch::Interact()
 				InterfaceInstance->Activate();
 		}
 	}
+	SwitchButtonMeshComponent->SetMaterial(0, SwitchOnMaterial);
 	bCanBePressed = false;
 }
 
 bool ASwitch::IsInteractable()
 {
 	return bCanBePressed;
+}
+
+void ASwitch::Activate()
+{
+	SwitchBaseMeshComponent->SetCollisionProfileName("BlockAllDynamic");
+	SwitchButtonMeshComponent->SetCollisionProfileName("BlockAllDynamic");
+	
+	SetActorHiddenInGame(false);
 }
 
