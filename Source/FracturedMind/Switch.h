@@ -27,6 +27,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	UStaticMeshComponent* SwitchButtonMeshComponent;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	UAudioComponent* SwitchSFX;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Switch | Materials")
 	UMaterial* SwitchOnMaterial;
 	
@@ -35,6 +38,7 @@ public:
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Switch | Completion Activators")
 	TArray<AActor*> Activators;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;

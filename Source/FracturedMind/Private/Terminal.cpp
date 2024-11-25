@@ -2,10 +2,7 @@
 
 #include "Blueprint/UserWidget.h"
 #include "FracturedMind/Door.h"
-#include "FracturedMind/PlayerCharacter.h"
 #include "Components/InputComponent.h"
-#include "Components/WidgetComponent.h"
-#include "GameFramework/Character.h"
 
 // Sets default values
 ATerminal::ATerminal()
@@ -49,29 +46,28 @@ void ATerminal::Tick(float DeltaTime)
 void ATerminal::Interact()
 {
 	if (WidgetCode && WidgetCode->GetCorrectCode())
-	{ 
+	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Le bon code a déjà été entré."));
 		return; 
-	} 
-		if (WidgetCodeClass)   
-		{ 
-			if (UUserWidget* UserWidget = CreateWidget<UUserWidget>(GetWorld(), WidgetCodeClass))  
-			{
-				WidgetCode = Cast<UWidgetCode>(UserWidget);
-				if (WidgetCode) 
-				{ 
-					WidgetCode->SetOwningTerminal(this);
-					WidgetCode->AddToViewport(); 
-					APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-					if (PlayerController)
-					{
+	}
+	if (WidgetCodeClass)   
+	{ 
+		if (UUserWidget* UserWidget = CreateWidget<UUserWidget>(GetWorld(), WidgetCodeClass))  
+		{
+			WidgetCode = Cast<UWidgetCode>(UserWidget);
+			if (WidgetCode) 
+			{ 
+				WidgetCode->SetOwningTerminal(this);
+				WidgetCode->AddToViewport(); 
+				APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+				if (PlayerController)
+				{
 						PlayerController->bShowMouseCursor = true;   
 						PlayerController->SetInputMode(FInputModeUIOnly());
-					}
-				} 
-			}
-		} 
- 
+				}
+			} 
+		}
+	} 
 } 
 
 bool ATerminal::IsInteractable()
