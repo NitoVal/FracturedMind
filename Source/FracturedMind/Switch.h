@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "NiagaraComponent.h"
 #include "CoreMinimal.h"
 #include "InteractionInterface.h"
 #include "PuzzleCompletionEventInterface.h"
@@ -29,6 +30,9 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	UAudioComponent* SwitchSFX;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	UNiagaraComponent* SwitchVFX;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Switch | Materials")
 	UMaterial* SwitchOnMaterial;

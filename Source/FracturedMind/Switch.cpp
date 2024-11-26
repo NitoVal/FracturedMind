@@ -20,6 +20,9 @@ ASwitch::ASwitch()
 
 	SwitchSFX = CreateDefaultSubobject<UAudioComponent>(TEXT("SwitchSFX"));
 	SwitchSFX->SetupAttachment(RootComponent);
+
+	SwitchVFX = CreateDefaultSubobject<UNiagaraComponent>(TEXT("SwitchVFX"));
+	SwitchVFX->SetupAttachment(RootComponent);
 	bCanBePressed = true;
 }
 
@@ -49,6 +52,7 @@ void ASwitch::Interact()
 	}
 	SwitchButtonMeshComponent->SetMaterial(0, SwitchOnMaterial);
 	SwitchSFX->Play();
+	SwitchVFX->Activate();
 	bCanBePressed = false;
 }
 
