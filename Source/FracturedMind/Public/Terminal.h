@@ -30,24 +30,42 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	UStaticMeshComponent* ScreenMeshComponent;
-
-	UFUNCTION(BlueprintCallable, Category = "Code")
-	void CheckCode();
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UWidgetComponent* MonitorWidgetComponent;
+	
+	UPROPERTY(EditAnywhere, Category = "Terminal | UI", meta = (EditCondition = "bIsInteractable", EditConditionHides))
+	TSubclassOf<UWidgetCode> MonitorWidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = "Terminal | UI")
+	TSubclassOf<UUserWidget> AccessGrantedWidgetClass;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Terminal | Puzzle", meta = (EditCondition = "bIsInteractable", EditConditionHides))
+	FString MonitorPassword;
+	
+	UPROPERTY(EditAnywhere, Category="Terminal | Interaction")
+	bool bIsInteractable;
+
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Terminal | Completion Activators")
 	TArray<AActor*> Activators;
+
+	void ShowMonitorUI();
+	void CloseMonitorUI();
+	void ActivateActivators();
+	void Activate();
+
 protected:
+	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	
 	virtual void Interact() override;
-	virtual bool IsInteractable() override; 
-
-public:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-	TSubclassOf<UUserWidget> WidgetCodeClass;
+	virtual bool IsInteractable() override;
 	
-	UWidgetCode* WidgetCode; 
-	
+private:
+	UPROPERTY()
+	UWidgetCode* MonitorWidget;
+
+	UPROPERTY()
+	UUserWidget* AccessGrantedWidget;
 };

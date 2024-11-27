@@ -22,17 +22,18 @@ ATerminal::ATerminal()
 	ScreenMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ScreenMeshComponent"));
 	ScreenMeshComponent->SetupAttachment(RootComponent);
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClassFinder(TEXT("FracturedMind/WidgetCode"));
-	if (WidgetClassFinder.Succeeded())
-	{
-		WidgetCodeClass = WidgetClassFinder.Class;
-	}
+	MonitorWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("MonitorWidget"));
+	MonitorWidgetComponent->SetupAttachment(ScreenMeshComponent);
+	MonitorWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+	bIsInteractable = true;
 }
 
 // Called when the game starts or when spawned
 void ATerminal::BeginPlay()
 {
-	Super::BeginPlay(); 
+	Super::BeginPlay();
+	if (MonitorWidgetClass)
+		MonitorWidgetComponent->SetWidgetClass(MonitorWidgetClass);
 }
 
 // Called every frame
@@ -43,57 +44,64 @@ void ATerminal::Tick(float DeltaTime)
 
 void ATerminal::Interact()
 {
-	if (WidgetCode && WidgetCode->GetCorrectCode())
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Le bon code a déjà été entré."));
-		return; 
-	}
-	if (WidgetCodeClass)   
-	{ 
-		if (UUserWidget* UserWidget = CreateWidget<UUserWidget>(GetWorld(), WidgetCodeClass))  
-		{
-			WidgetCode = Cast<UWidgetCode>(UserWidget);
-			if (WidgetCode) 
-			{ 
-				WidgetCode->SetOwningTerminal(this);
-				WidgetCode->AddToViewport(); 
-				APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-				if (PlayerController)
-				{
-					PlayerController->bShowMouseCursor = true;   
-					PlayerController->SetInputMode(FInputModeUIOnly());
-				}
-			} 
-		}
-	} 
+	ShowMonitorUI();
 } 
+void ATerminal::ShowMonitorUI()
+{
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	if (PlayerController && MonitorWidgetClass != nullptr)
+	{
+		if (MonitorWidget == nullptr)
+		{
+			MonitorWidget = CreateWidget<UWidgetCode>(PlayerController, MonitorWidgetClass);
+
+			if (MonitorWidget)
+			{
+				MonitorWidget->OwningTerminal = this;
+				MonitorWidget->AddToViewport();
+			
+				PlayerController->bShowMouseCursor = true;
+				PlayerController->SetInputMode(FInputModeUIOnly());
+				
+			}
+		}
+	}
+}
+
+void ATerminal::CloseMonitorUI()
+{
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	if (PlayerController && MonitorWidget != nullptr)
+	{
+		MonitorWidget->RemoveFromParent();
+		MonitorWidget = nullptr;
+		
+		PlayerController->bShowMouseCursor = false;
+		PlayerController->SetInputMode(FInputModeGameOnly());
+	}
+}
+
+void ATerminal::ActivateActivators()
+{
+	for (AActor* Actor : Activators)
+	{
+		//Check if the actor has the UPuzzleCompletionEventInterface
+		if (Actor && Actor->GetClass()->ImplementsInterface(UPuzzleCompletionEventInterface::StaticClass()))
+		{
+			IPuzzleCompletionEventInterface* InterfaceInstance = Cast<IPuzzleCompletionEventInterface>(Actor);
+			if (InterfaceInstance)
+				InterfaceInstance->Activate();
+		}
+	}
+}
+
+void ATerminal::Activate()
+{
+	MonitorWidgetComponent->SetWidgetClass(AccessGrantedWidgetClass);
+}
 
 bool ATerminal::IsInteractable()
 {
-	return true;
-} 
-
-void ATerminal::CheckCode()
-{ 
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-	
-	if (PlayerController)
-	{
-		PlayerController->bShowMouseCursor = false;
-		PlayerController->SetInputMode(FInputModeGameOnly());
-
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Jeu remis"));
-
-		for (AActor* Actor : Activators)
-		{
-			//Check if the actor has the UPuzzleCompletionEventInterface
-			if (Actor && Actor->GetClass()->ImplementsInterface(UPuzzleCompletionEventInterface::StaticClass()))
-			{
-				IPuzzleCompletionEventInterface* InterfaceInstance = Cast<IPuzzleCompletionEventInterface>(Actor);
-				if (InterfaceInstance)
-					InterfaceInstance->Activate();
-			}
-		}
-	} 
+	return bIsInteractable;
 }
  

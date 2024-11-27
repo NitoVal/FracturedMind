@@ -3,49 +3,39 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h" 
-#include "Components/CanvasPanel.h"
-#include "Components/Image.h"
-#include "Components/TextBlock.h"
-#include "Components/EditableTextBox.h" 
+
 #include "WidgetCode.generated.h"
 
+class UEditableTextBox;
+class UButton;
 class ATerminal;
 
 UCLASS()
 class FRACTUREDMIND_API UWidgetCode : public UUserWidget
 {
 	GENERATED_BODY()
-
 public:
-	virtual void NativeConstruct() override;
+	UPROPERTY(BlueprintReadWrite, Category = "Puzzle")
+	FString EnteredPassword;
 	
-	UPROPERTY(BlueprintReadWrite, Category = "Code")
-	bool CorrectCode;
-
-	// Getter pour CorrectCode
-	UFUNCTION(BlueprintCallable, Category = "Code")
-	bool GetCorrectCode() const { return CorrectCode; }
-
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, Category = "Monitor")
 	ATerminal* OwningTerminal;
-
-	void SetOwningTerminal(ATerminal* Terminal) { OwningTerminal = Terminal; }
-
 protected:
-	 
+	virtual void NativeConstruct() override;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	UEditableTextBox* PasswordInput;
+
 	UPROPERTY(meta = (BindWidget))
-	UCanvasPanel* CanvasPanel; 
+	UButton* SubmitButton;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* BackButton;
 	
-	UPROPERTY(meta = (BindWidget))
-	UImage* BackgroundImage;
- 
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* AwaitingInputText;
- 
-	UPROPERTY(meta = (BindWidget))
-	UEditableTextBox* CodeInputBox;
+	UFUNCTION()
+	void OnSubmitPassword();
 
 	UFUNCTION()
-	void OnCodeEntered(const FText& Text, ETextCommit::Type CommitMethod); 
+	void OnBackButtonClicked();
 	
 };
