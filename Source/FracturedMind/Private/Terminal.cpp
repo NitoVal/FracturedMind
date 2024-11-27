@@ -22,8 +22,6 @@ ATerminal::ATerminal()
 	ScreenMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ScreenMeshComponent"));
 	ScreenMeshComponent->SetupAttachment(RootComponent);
 
-	ViewportCodeAdded = false;
-
 	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClassFinder(TEXT("FracturedMind/WidgetCode"));
 	if (WidgetClassFinder.Succeeded())
 	{
@@ -62,8 +60,8 @@ void ATerminal::Interact()
 				APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 				if (PlayerController)
 				{
-						PlayerController->bShowMouseCursor = true;   
-						PlayerController->SetInputMode(FInputModeUIOnly());
+					PlayerController->bShowMouseCursor = true;   
+					PlayerController->SetInputMode(FInputModeUIOnly());
 				}
 			} 
 		}
@@ -86,14 +84,16 @@ void ATerminal::CheckCode()
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Jeu remis"));
 
-		if(LinkedDoor1 && LinkedDoor2)
+		for (AActor* Actor : Activators)
 		{
-			if(WidgetCode && WidgetCode->GetCorrectCode())
-			{ 
-				LinkedDoor1->Activate();
-				LinkedDoor2->Activate();
-			} 
-		} 
+			//Check if the actor has the UPuzzleCompletionEventInterface
+			if (Actor && Actor->GetClass()->ImplementsInterface(UPuzzleCompletionEventInterface::StaticClass()))
+			{
+				IPuzzleCompletionEventInterface* InterfaceInstance = Cast<IPuzzleCompletionEventInterface>(Actor);
+				if (InterfaceInstance)
+					InterfaceInstance->Activate();
+			}
+		}
 	} 
 }
  

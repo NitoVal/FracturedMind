@@ -4,7 +4,6 @@
 #include "FracturedMind/Public/WidgetCode.h"
 #include "FracturedMind/Public/Terminal.h"
 
-#include "Components/CanvasPanel.h"
 #include "Components/Image.h" 
 #include "Components/TextBlock.h"
 #include "Components/EditableTextBox.h" 

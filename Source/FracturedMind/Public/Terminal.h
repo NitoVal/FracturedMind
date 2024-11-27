@@ -33,27 +33,21 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Code")
 	void CheckCode();
-
-	bool ViewportCodeAdded;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door Reference")
-	ADoor* LinkedDoor1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door Reference")
-	ADoor* LinkedDoor2; 
-
+	
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Terminal | Completion Activators")
+	TArray<AActor*> Activators;
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;  
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+	
+	virtual void Interact() override;
 	virtual bool IsInteractable() override; 
 
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override; 
-	virtual void Interact() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-	TSubclassOf<UUserWidget> WidgetCodeClass;  
+	TSubclassOf<UUserWidget> WidgetCodeClass;
+	
 	UWidgetCode* WidgetCode; 
 	
 };
