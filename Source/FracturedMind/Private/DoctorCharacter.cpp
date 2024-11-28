@@ -2,6 +2,10 @@
 
 
 #include "DoctorCharacter.h"
+#include "Components/BoxComponent.h" 
+#include "Sound/SoundBase.h" 
+#include "Engine/World.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
 
 // Sets default values
@@ -13,74 +17,105 @@ ADoctorCharacter::ADoctorCharacter()
 	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
 	TriggerBox->SetupAttachment(RootComponent);
 	TriggerBox->SetBoxExtent(FVector(200.f, 200.f, 100.f));
-	TriggerBox->SetCollisionProfileName(TEXT("Trigger"));
- 
-	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ADoctorCharacter::OnOverlapBegin);
-	TriggerBox->OnComponentEndOverlap.AddDynamic(this, &ADoctorCharacter::OnOverlapEnd);
-
+	TriggerBox->SetCollisionProfileName(TEXT("Trigger")); 
+	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ADoctorCharacter::OnOverlapBegin);  
 }
 
 // Called when the game starts or when spawned
 void ADoctorCharacter::BeginPlay()
 {
-	Super::BeginPlay();
-	
-	if (!AM_IdleAnimation || SpeakingAnimations.Num() == 0)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Idle or Speaking Animations not set on %s"), *GetName());
-	} 
+	Super::BeginPlay(); 
 }
 
 // Called every frame
 void ADoctorCharacter::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-
+	Super::Tick(DeltaTime); 
 }
 
 // Called to bind functionality to input
 void ADoctorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	Super::SetupPlayerInputComponent(PlayerInputComponent); 
+} 
 
+FDialogueData* ADoctorCharacter::FindDialogueForActor(const FVector& ActorPosition)
+{
+	if (!DialogueDataTable)
+	{
+		UE_LOG(LogTemp, Error, TEXT("DialogueDataTable not assigned to the character %s"), *GetName());
+		return nullptr;
+	}
+
+	static const FString ContextString(TEXT("Dialogue Context"));
+	TArray<FName> RowNames = DialogueDataTable->GetRowNames();
+
+	for (const FName& RowName : RowNames)
+	{
+		FDialogueData* DialogueData = DialogueDataTable->FindRow<FDialogueData>(RowName, ContextString);
+		if (DialogueData)
+		{
+			for (const FVector& ValidPosition : DialogueData->ValidPositions)
+			{
+				if (ActorPosition.Equals(ValidPosition, 300.f))  
+				{
+					return DialogueData;
+				}
+			}
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("No dialogue found for position: %s"), *ActorPosition.ToString());
+	return nullptr;
 }
+
 
 void ADoctorCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
-									UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, 
-									bool bFromSweep, const FHitResult& SweepResult)
+									   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, 
+									   bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor && OtherActor != this)
-	{
-		UE_LOG(LogTemp, Log, TEXT("Player entered the trigger zone"));
+	{ 
+		if (TriggerBox && TriggerBox->IsOverlappingActor(OtherActor))
+		{  
+			FVector ActorPosition = OtherActor->GetActorLocation(); // Récupère la position
+			FDialogueData* DialogueData = FindDialogueForActor(ActorPosition); 
 
-		// Start speaking
-		StartSpeaking();
+			if (DialogueData)
+			{ 
+				for (const FVector& ValidPosition : DialogueData->ValidPositions)
+				{ 
+					if (ActorPosition.Equals(ValidPosition, 300.f))   
+					{
+						StartSpeaking(DialogueData);
+						return;  
+					}
+				}
+			}
+		}
 	}
 }
 
-void ADoctorCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
-								  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if (OtherActor && OtherActor != this)
-	{
-		UE_LOG(LogTemp, Log, TEXT("Player left the trigger zone"));
 
-		// Stop speaking
-		StopSpeaking();
-	}
-}
 
-void ADoctorCharacter::StartSpeaking()
+void ADoctorCharacter::StartSpeaking(FDialogueData* DialogueData)
 {
-	GetWorldTimerManager().SetTimer(SpeakingTimerHandle, this, &ADoctorCharacter::PlayRandomSpeakingAnimation, 3.f, true);
-	PlayRandomSpeakingAnimation();  
+	if (DialogueData)
+	{  
+		if (DialogueData->AudioFile)
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), DialogueData->AudioFile);
+		}  
+		GetWorldTimerManager().SetTimer(SpeakingTimerHandle, this, &ADoctorCharacter::PlayRandomSpeakingAnimation, 3.f, true);
+		PlayRandomSpeakingAnimation();  
+	} 
 }
 
 void ADoctorCharacter::StopSpeaking()
 {
 	GetWorldTimerManager().ClearTimer(SpeakingTimerHandle);
-
-	// Return to idle animation
+	GetWorldTimerManager().ClearTimer(SpeakingStopTimerHandle);
+	
 	if (AM_IdleAnimation)
 	{
 		PlayAnimMontage(AM_IdleAnimation);

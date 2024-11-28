@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "FracturedMind/DialogueData.h"
 #include "DoctorCharacter.generated.h" 
 
 class UAnimMontage;
@@ -29,6 +30,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+	UDataTable* DialogueDataTable;   
+ 
+	FDialogueData* FindDialogueForActor(const FVector& ActorPosition);
+
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* TriggerBox;
  
@@ -38,18 +44,15 @@ public:
 	UPROPERTY(EditAnywhere)
 	TArray<UAnimMontage*> SpeakingAnimations;
 
-	FTimerHandle SpeakingTimerHandle;
+	FTimerHandle SpeakingTimerHandle; 
+	FTimerHandle SpeakingStopTimerHandle; 
  
-	void StartSpeaking();
+	void StartSpeaking(FDialogueData* DialogueData);
 	void StopSpeaking();
 	void PlayRandomSpeakingAnimation();
  
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
 						UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, 
-						const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
-					  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+						const FHitResult& SweepResult); 
 }; 
