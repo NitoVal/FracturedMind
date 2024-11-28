@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "NiagaraComponent.h"
 #include "CoreMinimal.h"
 #include "InteractionInterface.h"
 #include "PuzzleCompletionEventInterface.h"
@@ -27,6 +28,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	UStaticMeshComponent* SwitchButtonMeshComponent;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	UAudioComponent* SwitchSFX;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	UNiagaraComponent* SwitchVFX;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Switch | Materials")
 	UMaterial* SwitchOnMaterial;
 	
@@ -35,6 +42,7 @@ public:
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Switch | Completion Activators")
 	TArray<AActor*> Activators;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;

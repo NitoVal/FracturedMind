@@ -106,7 +106,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Player | Settings")
 	float Sensitivity = 1.0f;
 	
-	UPlayerWidget* PlayerWidget;  
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Player | Pause")
+	bool bCanBePaused;
+	
+	UPlayerWidget* PlayerWidget;
 	
 	void SetSensitivity(float NewSensitivity);
     void PickupBigItem(ABigItems* BigItems);

@@ -30,30 +30,42 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	UStaticMeshComponent* ScreenMeshComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UWidgetComponent* MonitorWidgetComponent;
+	
+	UPROPERTY(EditAnywhere, Category = "Terminal | UI", meta = (EditCondition = "bIsInteractable", EditConditionHides))
+	TSubclassOf<UWidgetCode> MonitorWidgetClass;
 
-	UFUNCTION(BlueprintCallable, Category = "Code")
-	void CheckCode();
+	UPROPERTY(EditAnywhere, Category = "Terminal | UI")
+	TSubclassOf<UUserWidget> AccessGrantedWidgetClass;
 
-	bool ViewportCodeAdded;
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Terminal | Puzzle", meta = (EditCondition = "bIsInteractable", EditConditionHides))
+	FString MonitorPassword;
+	
+	UPROPERTY(EditAnywhere, Category="Terminal | Interaction")
+	bool bIsInteractable;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door Reference")
-	ADoor* LinkedDoor1;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Terminal | Completion Activators")
+	TArray<AActor*> Activators;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door Reference")
-	ADoor* LinkedDoor2; 
+	void ShowMonitorUI();
+	void CloseMonitorUI();
+	void ActivateActivators();
+	void Activate();
 
 protected:
 	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;  
-	virtual bool IsInteractable() override; 
-
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override; 
-	virtual void Interact() override;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-	TSubclassOf<UUserWidget> WidgetCodeClass;  
-	UWidgetCode* WidgetCode; 
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 	
+	virtual void Interact() override;
+	virtual bool IsInteractable() override;
+	
+private:
+	UPROPERTY()
+	UWidgetCode* MonitorWidget;
+
+	UPROPERTY()
+	UUserWidget* AccessGrantedWidget;
 };

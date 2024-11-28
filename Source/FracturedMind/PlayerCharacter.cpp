@@ -166,7 +166,7 @@ void APlayerCharacter::Pause()
 {
 	//Retrieve player controller in the world
 	APlayerController* PlayerController = Cast<APlayerController>(GEngine->GetFirstLocalPlayerController(GetWorld()));
-	if (PlayerController)
+	if (PlayerController && bCanBePaused)
 	{
 		//Check if the game is paused
 		if (PlayerController->IsPaused())

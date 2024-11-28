@@ -4,6 +4,7 @@
 #include "Switch.h"
 
 #include "PuzzleCompletionEventInterface.h"
+#include "Components/AudioComponent.h"
 
 ASwitch::ASwitch()
 {
@@ -16,7 +17,12 @@ ASwitch::ASwitch()
 
 	SwitchButtonMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SwitchButtonMeshComponent"));
 	SwitchButtonMeshComponent->SetupAttachment(SwitchBaseMeshComponent);
-	
+
+	SwitchSFX = CreateDefaultSubobject<UAudioComponent>(TEXT("SwitchSFX"));
+	SwitchSFX->SetupAttachment(RootComponent);
+
+	SwitchVFX = CreateDefaultSubobject<UNiagaraComponent>(TEXT("SwitchVFX"));
+	SwitchVFX->SetupAttachment(RootComponent);
 	bCanBePressed = true;
 }
 
@@ -45,6 +51,8 @@ void ASwitch::Interact()
 		}
 	}
 	SwitchButtonMeshComponent->SetMaterial(0, SwitchOnMaterial);
+	SwitchSFX->Play();
+	SwitchVFX->Activate();
 	bCanBePressed = false;
 }
 
