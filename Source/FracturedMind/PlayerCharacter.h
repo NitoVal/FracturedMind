@@ -86,13 +86,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
 	TSubclassOf<UUserWidget> SettingsWidgetClass;
- 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
-	TSubclassOf<UUserWidget> WidgetCodeClass; 
-	UWidgetCode* WidgetCode;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	ATerminal* TargetTerminal;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | Item")
 	AItem* Hand;
