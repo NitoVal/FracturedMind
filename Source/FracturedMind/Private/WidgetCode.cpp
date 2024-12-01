@@ -6,6 +6,7 @@
 #include "Components/Button.h"
 #include "FracturedMind/Public/Terminal.h"
 #include "Components/EditableTextBox.h" 
+#include "Components/TextBlock.h"
 
 
 void UWidgetCode::NativeConstruct()
@@ -16,7 +17,6 @@ void UWidgetCode::NativeConstruct()
 		SubmitButton->OnClicked.AddDynamic(this, &UWidgetCode::OnSubmitPassword);
 	if (BackButton)
 		BackButton->OnClicked.AddDynamic(this, &UWidgetCode::OnBackButtonClicked);
-
 	//PasswordInput->SetFocus();
 }
 
@@ -36,12 +36,13 @@ void UWidgetCode::OnSubmitPassword()
 					OwningTerminal->ActivateActivators();
 					OwningTerminal->bIsInteractable = false;
 					OwningTerminal->MonitorWidgetComponent->SetWidgetClass(OwningTerminal->AccessGrantedWidgetClass);
+					OwningTerminal->CloseMonitorUI();
 				}
 				else
 				{
-					GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red, "Wrong");
+					ErrorText->SetText(FText::FromString("Incorrect Password"));
+					PasswordInput->SetText(FText::FromString(""));
 				}
-				OwningTerminal->CloseMonitorUI();
 			}
 		}
 	}
