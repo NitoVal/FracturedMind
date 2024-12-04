@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h" 
 #include "Private/Collectible.h"
+#include "Private/CollectionWidget.h"
 #include "Terminal.h"
 #include "PlayerCharacter.generated.h"
 
@@ -72,6 +73,9 @@ class FRACTUREDMIND_API APlayerCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* RotateAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* CollectionAction;
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
@@ -86,6 +90,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
 	TSubclassOf<UUserWidget> SettingsWidgetClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
+	TSubclassOf<UCollectionWidget> CollectionWidgetClass;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | Item")
 	AItem* Hand;
@@ -103,6 +110,7 @@ public:
 	bool bCanBePaused;
 	
 	UPlayerWidget* PlayerWidget;
+	UCollectionWidget* CollectionWidget;
 	
 	void SetSensitivity(float NewSensitivity);
     void PickupBigItem(ABigItems* BigItems);
@@ -122,10 +130,13 @@ protected:
 	void EnterInspect();
 	void ExitInspect();
 	void RotateInspect(const FInputActionValue& Value);
+	void ToggleCollection();
 private:
 	bool bIsInspecting;
+	bool bIsCollectionOpen;
 	TScriptInterface<IInteractionInterface> CurrentInteractable; 
-	UUserWidget* PauseWidget;  
+	UUserWidget* PauseWidget;
+
 	AActor* CurrentInspectObject;
 	FRotator CurrentInspectRotation;
 	ATerminal* TerminalReference;

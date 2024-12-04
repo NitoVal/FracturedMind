@@ -19,4 +19,7 @@ struct FRACTUREDMIND_API FCollectibleData : public FTableRowBase
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UMaterial* ModelMaterial;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UTexture2D* Icon;
 };

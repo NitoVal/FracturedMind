@@ -110,6 +110,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Pause);
 		EnhancedInputComponent->BindAction(ExitInspectAction, ETriggerEvent::Triggered, this, &APlayerCharacter::ExitInspect);
 		EnhancedInputComponent->BindAction(RotateAction, ETriggerEvent::Triggered, this, &APlayerCharacter::RotateInspect);
+		EnhancedInputComponent->BindAction(CollectionAction, ETriggerEvent::Triggered, this, &APlayerCharacter::ToggleCollection);
 	}
 }
 
@@ -118,6 +119,7 @@ void APlayerCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (OtherActor->IsA(ACollectible::StaticClass()))
 	{
 		ACollectible* Collectible = Cast<ACollectible>(OtherActor);
+		Collectible->SetActorEnableCollision(false);
 		Collectibles.Add(Collectible);
 		CurrentInspectObject = Collectible;
 		EnterInspect();
@@ -294,6 +296,40 @@ void APlayerCharacter::RotateInspect(const FInputActionValue& Value)
 	CurrentInspectRotation.Yaw += Yaw;
 	
 	InspectPosition->SetRelativeRotation(CurrentInspectRotation);
+}
+
+void APlayerCharacter::ToggleCollection()
+{
+	APlayerController* PlayerController = Cast<APlayerController>(GEngine->GetFirstLocalPlayerController(GetWorld()));
+	if (bIsCollectionOpen)
+	{
+		bIsCollectionOpen = false;
+		
+		PlayerController->SetInputMode(FInputModeGameOnly());
+		PlayerController->bShowMouseCursor = false;
+		
+		PlayerWidget->SetVisibility(ESlateVisibility::Visible);
+		if (CollectionWidget)
+			CollectionWidget->RemoveFromParent();
+	}
+	else
+	{
+		bIsCollectionOpen = true;
+		
+		FInputModeGameAndUI InputMode;
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		PlayerController->SetInputMode(InputMode);
+		PlayerController->bShowMouseCursor = true;
+		
+		PlayerWidget->SetVisibility(ESlateVisibility::Collapsed);
+		if (CollectionWidgetClass)
+		{
+			UCollectionWidget* UserWidget = CreateWidget<UCollectionWidget>(GetWorld(), CollectionWidgetClass);
+			CollectionWidget = UserWidget;
+			CollectionWidget->AddToViewport();
+		}
+	}
+
 }
 
 void APlayerCharacter::PerformLineTrace()
