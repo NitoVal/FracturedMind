@@ -107,7 +107,7 @@ public:
 	float Sensitivity = 1.0f;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Player | Pause")
-	bool bCanBePaused;
+	bool bCanOpenUI;
 	
 	UPlayerWidget* PlayerWidget;
 	UCollectionWidget* CollectionWidget;

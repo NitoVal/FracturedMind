@@ -10,6 +10,7 @@
 #include "InputActionValue.h"
 #include "InteractionInterface.h"
 #include "Item.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Private/BigItems.h"
 
 // Sets default values
@@ -168,7 +169,7 @@ void APlayerCharacter::Pause()
 {
 	//Retrieve player controller in the world
 	APlayerController* PlayerController = Cast<APlayerController>(GEngine->GetFirstLocalPlayerController(GetWorld()));
-	if (PlayerController && bCanBePaused)
+	if (PlayerController && bCanOpenUI)
 	{
 		//Check if the game is paused
 		if (PlayerController->IsPaused())
@@ -301,35 +302,41 @@ void APlayerCharacter::RotateInspect(const FInputActionValue& Value)
 void APlayerCharacter::ToggleCollection()
 {
 	APlayerController* PlayerController = Cast<APlayerController>(GEngine->GetFirstLocalPlayerController(GetWorld()));
-	if (bIsCollectionOpen)
+	if (bCanOpenUI)
 	{
-		bIsCollectionOpen = false;
-		
-		PlayerController->SetInputMode(FInputModeGameOnly());
-		PlayerController->bShowMouseCursor = false;
-		
-		PlayerWidget->SetVisibility(ESlateVisibility::Visible);
-		if (CollectionWidget)
-			CollectionWidget->RemoveFromParent();
-	}
-	else
-	{
-		bIsCollectionOpen = true;
-		
-		FInputModeGameAndUI InputMode;
-		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-		PlayerController->SetInputMode(InputMode);
-		PlayerController->bShowMouseCursor = true;
-		
-		PlayerWidget->SetVisibility(ESlateVisibility::Collapsed);
-		if (CollectionWidgetClass)
+		if (bIsCollectionOpen)
 		{
-			UCollectionWidget* UserWidget = CreateWidget<UCollectionWidget>(GetWorld(), CollectionWidgetClass);
-			CollectionWidget = UserWidget;
-			CollectionWidget->AddToViewport();
+			bIsCollectionOpen = false;
+		
+			GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+		
+			PlayerController->SetInputMode(FInputModeGameOnly());
+			PlayerController->bShowMouseCursor = false;
+		
+			PlayerWidget->SetVisibility(ESlateVisibility::Visible);
+			if (CollectionWidget)
+				CollectionWidget->RemoveFromParent();
+		}
+		else
+		{
+			bIsCollectionOpen = true;
+		
+			GetCharacterMovement()->SetMovementMode(MOVE_None);
+		
+			FInputModeGameAndUI InputMode;
+			InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+			PlayerController->SetInputMode(InputMode);
+			PlayerController->bShowMouseCursor = true;
+		
+			PlayerWidget->SetVisibility(ESlateVisibility::Collapsed);
+			if (CollectionWidgetClass)
+			{
+				UCollectionWidget* UserWidget = CreateWidget<UCollectionWidget>(GetWorld(), CollectionWidgetClass);
+				CollectionWidget = UserWidget;
+				CollectionWidget->AddToViewport();
+			}
 		}
 	}
-
 }
 
 void APlayerCharacter::PerformLineTrace()
