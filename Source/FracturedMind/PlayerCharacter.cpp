@@ -10,6 +10,7 @@
 #include "InputActionValue.h"
 #include "InteractionInterface.h"
 #include "Item.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Private/BigItems.h"
 
 // Sets default values
@@ -110,6 +111,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Pause);
 		EnhancedInputComponent->BindAction(ExitInspectAction, ETriggerEvent::Triggered, this, &APlayerCharacter::ExitInspect);
 		EnhancedInputComponent->BindAction(RotateAction, ETriggerEvent::Triggered, this, &APlayerCharacter::RotateInspect);
+		EnhancedInputComponent->BindAction(CollectionAction, ETriggerEvent::Triggered, this, &APlayerCharacter::ToggleCollection);
 	}
 }
 
@@ -118,6 +120,7 @@ void APlayerCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (OtherActor->IsA(ACollectible::StaticClass()))
 	{
 		ACollectible* Collectible = Cast<ACollectible>(OtherActor);
+		Collectible->SetActorEnableCollision(false);
 		Collectibles.Add(Collectible);
 		CurrentInspectObject = Collectible;
 		EnterInspect();
@@ -166,11 +169,13 @@ void APlayerCharacter::Pause()
 {
 	//Retrieve player controller in the world
 	APlayerController* PlayerController = Cast<APlayerController>(GEngine->GetFirstLocalPlayerController(GetWorld()));
-	if (PlayerController && bCanBePaused)
+	if (PlayerController && bCanOpenUI && !bIsCollectionOpen)
 	{
 		//Check if the game is paused
 		if (PlayerController->IsPaused())
 		{
+			bIsPauseUIOpen = false;
+			
 			PlayerController->SetPause(false);
 			PlayerController->SetInputMode(FInputModeGameOnly());
 			PlayerController->bShowMouseCursor = false;
@@ -180,6 +185,8 @@ void APlayerCharacter::Pause()
 		}
 		else //The game is not paused
 		{
+			bIsPauseUIOpen = true;
+			
 			PlayerController->SetPause(true);
 			FInputModeGameAndUI InputMode;
 			InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
@@ -294,6 +301,44 @@ void APlayerCharacter::RotateInspect(const FInputActionValue& Value)
 	CurrentInspectRotation.Yaw += Yaw;
 	
 	InspectPosition->SetRelativeRotation(CurrentInspectRotation);
+}
+
+void APlayerCharacter::ToggleCollection()
+{
+	APlayerController* PlayerController = Cast<APlayerController>(GEngine->GetFirstLocalPlayerController(GetWorld()));
+	if (bCanOpenUI && !bIsPauseUIOpen)
+	{
+		if (bIsCollectionOpen && PlayerController->IsPaused())
+		{
+			bIsCollectionOpen = false;
+			
+			PlayerController->SetPause(false);
+			PlayerController->SetInputMode(FInputModeGameOnly());
+			PlayerController->bShowMouseCursor = false;
+		
+			PlayerWidget->SetVisibility(ESlateVisibility::Visible);
+			if (CollectionWidget)
+				CollectionWidget->RemoveFromParent();
+		}
+		else
+		{
+			bIsCollectionOpen = true;
+		
+			PlayerController->SetPause(true);
+			FInputModeGameAndUI InputMode;
+			InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+			PlayerController->SetInputMode(InputMode);
+			PlayerController->bShowMouseCursor = true;
+		
+			PlayerWidget->SetVisibility(ESlateVisibility::Collapsed);
+			if (CollectionWidgetClass)
+			{
+				UCollectionWidget* UserWidget = CreateWidget<UCollectionWidget>(GetWorld(), CollectionWidgetClass);
+				CollectionWidget = UserWidget;
+				CollectionWidget->AddToViewport();
+			}
+		}
+	}
 }
 
 void APlayerCharacter::PerformLineTrace()

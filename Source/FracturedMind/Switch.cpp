@@ -68,4 +68,3 @@ void ASwitch::Activate()
 	
 	SetActorHiddenInGame(false);
 }
-

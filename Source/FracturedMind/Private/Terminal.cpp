@@ -62,7 +62,6 @@ void ATerminal::ShowMonitorUI()
 			
 				PlayerController->bShowMouseCursor = true;
 				PlayerController->SetInputMode(FInputModeUIOnly());
-				
 			}
 		}
 	}

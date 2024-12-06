@@ -6,6 +6,7 @@
 
 #include "WidgetCode.generated.h"
 
+class UTextBlock;
 class UEditableTextBox;
 class UButton;
 class ATerminal;
@@ -25,7 +26,10 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	UEditableTextBox* PasswordInput;
-
+	
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	UTextBlock* ErrorText;
+	
 	UPROPERTY(meta = (BindWidget))
 	UButton* SubmitButton;
 

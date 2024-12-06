@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h" 
 #include "Private/Collectible.h"
+#include "Private/CollectionWidget.h"
 #include "Terminal.h"
 #include "PlayerCharacter.generated.h"
 
@@ -72,6 +73,9 @@ class FRACTUREDMIND_API APlayerCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* RotateAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* CollectionAction;
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
@@ -86,13 +90,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
 	TSubclassOf<UUserWidget> SettingsWidgetClass;
- 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
-	TSubclassOf<UUserWidget> WidgetCodeClass; 
-	UWidgetCode* WidgetCode;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	ATerminal* TargetTerminal;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Player | UI")
+	TSubclassOf<UCollectionWidget> CollectionWidgetClass;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player | Item")
 	AItem* Hand;
@@ -107,9 +107,10 @@ public:
 	float Sensitivity = 1.0f;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Player | Pause")
-	bool bCanBePaused;
+	bool bCanOpenUI;
 	
 	UPlayerWidget* PlayerWidget;
+	UCollectionWidget* CollectionWidget;
 	
 	void SetSensitivity(float NewSensitivity);
     void PickupBigItem(ABigItems* BigItems);
@@ -129,10 +130,14 @@ protected:
 	void EnterInspect();
 	void ExitInspect();
 	void RotateInspect(const FInputActionValue& Value);
+	void ToggleCollection();
 private:
 	bool bIsInspecting;
+	bool bIsPauseUIOpen;
+	bool bIsCollectionOpen;
 	TScriptInterface<IInteractionInterface> CurrentInteractable; 
-	UUserWidget* PauseWidget;  
+	UUserWidget* PauseWidget;
+
 	AActor* CurrentInspectObject;
 	FRotator CurrentInspectRotation;
 	ATerminal* TerminalReference;
