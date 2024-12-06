@@ -133,6 +133,7 @@ protected:
 	void ToggleCollection();
 private:
 	bool bIsInspecting;
+	bool bIsPauseUIOpen;
 	bool bIsCollectionOpen;
 	TScriptInterface<IInteractionInterface> CurrentInteractable; 
 	UUserWidget* PauseWidget;

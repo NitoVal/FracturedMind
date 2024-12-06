@@ -169,11 +169,13 @@ void APlayerCharacter::Pause()
 {
 	//Retrieve player controller in the world
 	APlayerController* PlayerController = Cast<APlayerController>(GEngine->GetFirstLocalPlayerController(GetWorld()));
-	if (PlayerController && bCanOpenUI)
+	if (PlayerController && bCanOpenUI && !bIsCollectionOpen)
 	{
 		//Check if the game is paused
 		if (PlayerController->IsPaused())
 		{
+			bIsPauseUIOpen = false;
+			
 			PlayerController->SetPause(false);
 			PlayerController->SetInputMode(FInputModeGameOnly());
 			PlayerController->bShowMouseCursor = false;
@@ -183,6 +185,8 @@ void APlayerCharacter::Pause()
 		}
 		else //The game is not paused
 		{
+			bIsPauseUIOpen = true;
+			
 			PlayerController->SetPause(true);
 			FInputModeGameAndUI InputMode;
 			InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
@@ -302,14 +306,13 @@ void APlayerCharacter::RotateInspect(const FInputActionValue& Value)
 void APlayerCharacter::ToggleCollection()
 {
 	APlayerController* PlayerController = Cast<APlayerController>(GEngine->GetFirstLocalPlayerController(GetWorld()));
-	if (bCanOpenUI)
+	if (bCanOpenUI && !bIsPauseUIOpen)
 	{
-		if (bIsCollectionOpen)
+		if (bIsCollectionOpen && PlayerController->IsPaused())
 		{
 			bIsCollectionOpen = false;
-		
-			GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-		
+			
+			PlayerController->SetPause(false);
 			PlayerController->SetInputMode(FInputModeGameOnly());
 			PlayerController->bShowMouseCursor = false;
 		
@@ -321,8 +324,7 @@ void APlayerCharacter::ToggleCollection()
 		{
 			bIsCollectionOpen = true;
 		
-			GetCharacterMovement()->SetMovementMode(MOVE_None);
-		
+			PlayerController->SetPause(true);
 			FInputModeGameAndUI InputMode;
 			InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 			PlayerController->SetInputMode(InputMode);
