@@ -4,6 +4,7 @@
 #include "CollectionWidget.h"
 
 #include "CollectibleSlotWidget.h"
+#include "Animation/WidgetAnimation.h"
 #include "Components/TextBlock.h"
 #include "Components/WrapBox.h"
 #include "FracturedMind/CollectibleData.h"
@@ -14,6 +15,9 @@ struct FCollectibleData;
 
 void UCollectionWidget::NativeConstruct()
 {
+	if (OpeningCollectionAnimation)
+		PlayAnimation(OpeningCollectionAnimation);
+	
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	for (ACollectible* Collectible : PlayerCharacter->Collectibles)
 	{
@@ -29,5 +33,15 @@ void UCollectionWidget::SetCollectibleText(ACollectible* CollectibleIn)
 	{
 		CollectibleNameText->SetText(Row->Name);
 		CollectibleDescriptionText->SetText(Row->Description);
+	}
+}
+
+void UCollectionWidget::CloseCollectionUI()
+{
+	if (ClosingCollectionAnimation)
+	{
+		PlayAnimation(ClosingCollectionAnimation);
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle,[this](){ OnCloseAnimationFinished.Broadcast(); RemoveFromParent();},ClosingCollectionAnimation->GetEndTime(),false);
 	}
 }

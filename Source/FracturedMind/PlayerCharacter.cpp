@@ -318,7 +318,7 @@ void APlayerCharacter::ToggleCollection()
 		
 			PlayerWidget->SetVisibility(ESlateVisibility::Visible);
 			if (CollectionWidget)
-				CollectionWidget->RemoveFromParent();
+				CollectionWidget->CloseCollectionUI();
 		}
 		else
 		{

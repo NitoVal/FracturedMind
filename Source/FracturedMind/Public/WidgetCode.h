@@ -10,7 +10,7 @@ class UTextBlock;
 class UEditableTextBox;
 class UButton;
 class ATerminal;
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCloseAnimationFinished);
 UCLASS()
 class FRACTUREDMIND_API UWidgetCode : public UUserWidget
 {
@@ -21,6 +21,9 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Monitor")
 	ATerminal* OwningTerminal;
+
+	UPROPERTY(BlueprintAssignable, Category = "UI")
+	FOnCloseAnimationFinished OnCloseAnimationFinished;
 protected:
 	virtual void NativeConstruct() override;
 
@@ -35,11 +38,20 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* BackButton;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* OpeningTerminalUI;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* ClosingTerminalUI;
 	
 	UFUNCTION()
 	void OnSubmitPassword();
 
 	UFUNCTION()
 	void OnBackButtonClicked();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void PlayCloseAnimation();
 	
 };

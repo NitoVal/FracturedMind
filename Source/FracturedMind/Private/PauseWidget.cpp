@@ -12,7 +12,7 @@
 void UPauseWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
+	
 	if (ResumeButton)
 		ResumeButton->OnClicked.AddDynamic(this, &UPauseWidget::Resume);
 	if (SettingsButton)

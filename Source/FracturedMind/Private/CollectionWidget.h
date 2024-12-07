@@ -13,6 +13,7 @@ class UTextBlock;
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCloseCollectionAnimationFinished);
 UCLASS()
 class UCollectionWidget : public UUserWidget
 {
@@ -31,8 +32,17 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UCollectibleSlotWidget> CollectibleSlotClass;
 
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* OpeningCollectionAnimation;
+	
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* ClosingCollectionAnimation;
+
+	UPROPERTY(BlueprintAssignable, Category = "UI")
+	FOnCloseCollectionAnimationFinished OnCloseAnimationFinished;
+	
 	void SetCollectibleText(ACollectible* CollectibleIn);
+	void CloseCollectionUI();
 protected:
 	virtual void NativeConstruct() override;
-	
 };

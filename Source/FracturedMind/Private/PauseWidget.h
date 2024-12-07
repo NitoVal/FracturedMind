@@ -27,9 +27,17 @@ public:
 	
 	UPROPERTY(meta = (BindWidget))
 	UButton* QuitButton;
-
+	
+	// UPROPERTY(meta = (BindWidgetAnim), Transient)
+	// UWidgetAnimation* OpeningPauseAnimation;
+	//
+	// UPROPERTY(meta = (BindWidgetAnim), Transient)
+	// UWidgetAnimation* ClosingPauseAnimation;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Pause Menu | UI")
 	TSubclassOf<UUserWidget> SettingsWidgetClass;
+
+	
 protected:
 	virtual void NativeConstruct() override;
 
