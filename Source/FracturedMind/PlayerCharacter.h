@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h" 
-#include "Private/Collectible.h"
-#include "Private/CollectionWidget.h"
-#include "Terminal.h"
 #include "PlayerCharacter.generated.h"
 
+class ACollectible;
 class ATerminal;
 class AItem;
 class ABigItems;
 class IInteractionInterface;
+class UPauseWidget;
+class UCollectionWidget;
 class UPlayerWidget;
 class UInputComponent;
 class USkeletalMeshComponent;
@@ -111,6 +111,7 @@ public:
 	
 	UPlayerWidget* PlayerWidget;
 	UCollectionWidget* CollectionWidget;
+	UPauseWidget* PauseWidget;
 	
 	void SetSensitivity(float NewSensitivity);
     void PickupBigItem(ABigItems* BigItems);
@@ -136,8 +137,7 @@ private:
 	bool bIsPauseUIOpen;
 	bool bIsCollectionOpen;
 	TScriptInterface<IInteractionInterface> CurrentInteractable; 
-	UUserWidget* PauseWidget;
-
+	
 	AActor* CurrentInspectObject;
 	FRotator CurrentInspectRotation;
 	ATerminal* TerminalReference;
