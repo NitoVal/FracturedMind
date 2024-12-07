@@ -12,6 +12,7 @@
 #include "Item.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Private/BigItems.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -42,7 +43,7 @@ APlayerCharacter::APlayerCharacter()
 	HandPositionBigItem->SetupAttachment(FirstPersonCameraComponent);
 
 	InspectPosition = CreateDefaultSubobject<USceneComponent>(TEXT("InspectPosition"));
-	InspectPosition->SetupAttachment(FirstPersonCameraComponent);
+	InspectPosition->SetupAttachment(FirstPersonCameraComponent); 
 }
 
 // Called when the game starts or when spawned
@@ -207,6 +208,17 @@ void APlayerCharacter::Pickup(AItem* Item)
 		Hand = Item;
 		Hand->AttachToComponent(HandPosition,FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 		Hand->SetActorLocation(HandPosition->GetComponentLocation());
+		if (Item->IsHammer())
+		{
+			if (UncomfortableSound)  
+			{
+				UGameplayStatics::PlaySoundAtLocation(
+					this,                    
+					UncomfortableSound,           
+					GetActorLocation()       
+				);
+			}
+		}
 	}
 }
 
