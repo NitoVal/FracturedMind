@@ -3,6 +3,7 @@
 
 #include "FracturedMind/Public/WidgetCode.h"
 
+#include "Animation/WidgetAnimation.h"
 #include "Components/Button.h"
 #include "FracturedMind/Public/Terminal.h"
 #include "Components/EditableTextBox.h" 
@@ -13,11 +14,13 @@ void UWidgetCode::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
+	if (OpeningTerminalUI)
+		PlayAnimation(OpeningTerminalUI);
+	
 	if (SubmitButton)
 		SubmitButton->OnClicked.AddDynamic(this, &UWidgetCode::OnSubmitPassword);
 	if (BackButton)
 		BackButton->OnClicked.AddDynamic(this, &UWidgetCode::OnBackButtonClicked);
-	//PasswordInput->SetFocus();
 }
 
 void UWidgetCode::OnSubmitPassword()
@@ -27,8 +30,6 @@ void UWidgetCode::OnSubmitPassword()
 		EnteredPassword = PasswordInput->GetText().ToString();
 		if (EnteredPassword.Len() > 0)
 		{
-			// UpdateMonitorScreen();
-			
 			if (OwningTerminal)
 			{
 				if (EnteredPassword.ToLower() == OwningTerminal->MonitorPassword.ToLower())
@@ -36,7 +37,7 @@ void UWidgetCode::OnSubmitPassword()
 					OwningTerminal->ActivateActivators();
 					OwningTerminal->bIsInteractable = false;
 					OwningTerminal->MonitorWidgetComponent->SetWidgetClass(OwningTerminal->AccessGrantedWidgetClass);
-					OwningTerminal->CloseMonitorUI();
+					PlayCloseAnimation();
 				}
 				else
 				{
@@ -50,5 +51,15 @@ void UWidgetCode::OnSubmitPassword()
 
 void UWidgetCode::OnBackButtonClicked()
 {
-	OwningTerminal->CloseMonitorUI();
+	PlayCloseAnimation();
+}
+
+void UWidgetCode::PlayCloseAnimation()
+{
+	if (ClosingTerminalUI)
+	{
+		PlayAnimation(ClosingTerminalUI);
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle,[this](){ OnCloseAnimationFinished.Broadcast(); OwningTerminal->CloseMonitorUI();},ClosingTerminalUI->GetEndTime(),false);
+	}
 }

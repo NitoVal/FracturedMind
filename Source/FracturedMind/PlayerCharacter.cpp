@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "PlayerCharacter.h"
 
+#include "Collectible.h"
+#include "CollectionWidget.h"
 #include "PlayerWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
@@ -10,6 +12,7 @@
 #include "InputActionValue.h"
 #include "InteractionInterface.h"
 #include "Item.h"
+#include "PauseWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Private/BigItems.h"
 #include "Kismet/GameplayStatics.h"
@@ -62,10 +65,12 @@ void APlayerCharacter::BeginPlay()
 	}
 	if (PauseWidgetClass)
 	{
-		UUserWidget* UserWidget = CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass);
+		UPauseWidget* UserWidget = CreateWidget<UPauseWidget>(GetWorld(), PauseWidgetClass);
 		PauseWidget = UserWidget;
 		PauseWidget->AddToViewport();
+		PauseWidget->SetShouldPlayAnimations(false);
 		PauseWidget->SetVisibility(ESlateVisibility::Collapsed);
+		PauseWidget->SetShouldPlayAnimations(true);
 	}
 	//Get settings when starting game
 	if (SettingsWidgetClass)
@@ -301,7 +306,7 @@ void APlayerCharacter::ExitInspect()
 		InputSubsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
 }
-
+//Use to rotate the collectible to inspect
 void APlayerCharacter::RotateInspect(const FInputActionValue& Value)
 {
 	const FVector2D InputVector = Value.Get<FVector2D>();
@@ -330,7 +335,7 @@ void APlayerCharacter::ToggleCollection()
 		
 			PlayerWidget->SetVisibility(ESlateVisibility::Visible);
 			if (CollectionWidget)
-				CollectionWidget->RemoveFromParent();
+				CollectionWidget->CloseCollectionUI();
 		}
 		else
 		{

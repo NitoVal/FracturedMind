@@ -4,6 +4,7 @@
 #include "PauseWidget.h"
 
 #include "SettingsWidget.h"
+#include "Animation/WidgetAnimation.h"
 #include "Components/Button.h"
 #include "FracturedMind/PlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
@@ -12,7 +13,7 @@
 void UPauseWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
+	
 	if (ResumeButton)
 		ResumeButton->OnClicked.AddDynamic(this, &UPauseWidget::Resume);
 	if (SettingsButton)
@@ -21,6 +22,46 @@ void UPauseWidget::NativeConstruct()
 		ReturnToMainMenuButton->OnClicked.AddDynamic(this, &UPauseWidget::ReturnToMainMenu);
 	if (QuitButton)
 		QuitButton->OnClicked.AddDynamic(this, &UPauseWidget::Quit);
+}
+
+void UPauseWidget::SetVisibility(ESlateVisibility InVisibility)
+{
+	// Skip animations if not enabled
+	if (!bShouldPlayAnimations)
+	{
+		Super::SetVisibility(InVisibility);
+		return;
+	}
+
+	if (InVisibility == ESlateVisibility::Visible)
+	{
+		Super::SetVisibility(InVisibility);
+
+		if (OpeningPauseAnimation)
+			PlayAnimation(OpeningPauseAnimation);
+	}
+	else if (InVisibility == ESlateVisibility::Hidden || InVisibility == ESlateVisibility::Collapsed)
+	{
+		if (ClosingPauseAnimation)
+		{
+			PlayAnimation(ClosingPauseAnimation);
+
+			FTimerHandle TimerHandle;
+			float AnimationDuration = ClosingPauseAnimation->GetEndTime();
+
+			if (AnimationDuration > 0.f)
+				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this, InVisibility](){ Super::SetVisibility(InVisibility); }, AnimationDuration, false);
+			else
+				Super::SetVisibility(InVisibility);
+		}
+		else
+			Super::SetVisibility(InVisibility);
+	}
+}
+
+void UPauseWidget::SetShouldPlayAnimations(bool bShouldPlay)
+{
+	bShouldPlayAnimations = bShouldPlay;
 }
 
 void UPauseWidget::Resume()
