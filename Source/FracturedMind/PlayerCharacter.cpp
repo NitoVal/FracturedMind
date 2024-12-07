@@ -289,7 +289,7 @@ void APlayerCharacter::ExitInspect()
 		InputSubsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
 }
-
+//Use to rotate the collectible to inspect
 void APlayerCharacter::RotateInspect(const FInputActionValue& Value)
 {
 	const FVector2D InputVector = Value.Get<FVector2D>();
