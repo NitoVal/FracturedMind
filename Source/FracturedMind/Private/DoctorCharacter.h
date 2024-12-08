@@ -30,13 +30,15 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void LookAtPlayer(AActor* PlayerActor);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
 	UDataTable* DialogueDataTable;   
  
 	FDialogueData* FindDialogueForActor(const FVector& ActorPosition);
 
 	UPROPERTY(VisibleAnywhere)
-	UBoxComponent* TriggerBox;
+	UBoxComponent* TriggerBox; 
  
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> AM_IdleAnimation;
@@ -54,5 +56,6 @@ public:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
 						UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, 
-						const FHitResult& SweepResult); 
+						const FHitResult& SweepResult);
+ 
 }; 

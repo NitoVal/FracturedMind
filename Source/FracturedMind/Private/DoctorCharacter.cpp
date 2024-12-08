@@ -5,8 +5,9 @@
 #include "Components/BoxComponent.h" 
 #include "Sound/SoundBase.h" 
 #include "Engine/World.h"
-#include "Kismet/GameplayStatics.h"
+#include "Kismet/GameplayStatics.h" 
 #include "Components/BoxComponent.h"
+#include "FracturedMind/PlayerCharacter.h"
 
 // Sets default values
 ADoctorCharacter::ADoctorCharacter()
@@ -18,7 +19,7 @@ ADoctorCharacter::ADoctorCharacter()
 	TriggerBox->SetupAttachment(RootComponent);
 	TriggerBox->SetBoxExtent(FVector(200.f, 200.f, 100.f));
 	TriggerBox->SetCollisionProfileName(TEXT("Trigger")); 
-	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ADoctorCharacter::OnOverlapBegin);  
+	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ADoctorCharacter::OnOverlapBegin); 
 }
 
 // Called when the game starts or when spawned
@@ -30,7 +31,9 @@ void ADoctorCharacter::BeginPlay()
 // Called every frame
 void ADoctorCharacter::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime); 
+	Super::Tick(DeltaTime);
+	AActor* PlayerActor = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	LookAtPlayer(PlayerActor);
 }
 
 // Called to bind functionality to input
@@ -41,12 +44,6 @@ void ADoctorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 FDialogueData* ADoctorCharacter::FindDialogueForActor(const FVector& ActorPosition)
 {
-	if (!DialogueDataTable)
-	{
-		UE_LOG(LogTemp, Error, TEXT("DialogueDataTable not assigned to the character %s"), *GetName());
-		return nullptr;
-	}
-
 	static const FString ContextString(TEXT("Dialogue Context"));
 	TArray<FName> RowNames = DialogueDataTable->GetRowNames();
 
@@ -64,11 +61,9 @@ FDialogueData* ADoctorCharacter::FindDialogueForActor(const FVector& ActorPositi
 			}
 		}
 	}
-
 	UE_LOG(LogTemp, Warning, TEXT("No dialogue found for position: %s"), *ActorPosition.ToString());
 	return nullptr;
 }
-
 
 void ADoctorCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
 									   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, 
@@ -78,7 +73,7 @@ void ADoctorCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 	{ 
 		if (TriggerBox && TriggerBox->IsOverlappingActor(OtherActor))
 		{  
-			FVector ActorPosition = OtherActor->GetActorLocation(); // Récupère la position
+			FVector ActorPosition = OtherActor->GetActorLocation(); 
 			FDialogueData* DialogueData = FindDialogueForActor(ActorPosition); 
 
 			if (DialogueData)
@@ -88,16 +83,15 @@ void ADoctorCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 					if (ActorPosition.Equals(ValidPosition, 300.f))   
 					{
 						StartSpeaking(DialogueData);
+						TriggerBox->DestroyComponent();
 						return;  
 					}
 				}
 			}
 		}
 	}
-}
-
-
-
+} 
+ 
 void ADoctorCharacter::StartSpeaking(FDialogueData* DialogueData)
 {
 	if (DialogueData)
@@ -105,10 +99,29 @@ void ADoctorCharacter::StartSpeaking(FDialogueData* DialogueData)
 		if (DialogueData->AudioFile)
 		{
 			UGameplayStatics::PlaySound2D(GetWorld(), DialogueData->AudioFile);
-		}  
+		}
+		float StopSpeakingDelay = 17.0f;  
+		GetWorldTimerManager().SetTimer(SpeakingStopTimerHandle, this, &ADoctorCharacter::StopSpeaking, StopSpeakingDelay, false);
+		
 		GetWorldTimerManager().SetTimer(SpeakingTimerHandle, this, &ADoctorCharacter::PlayRandomSpeakingAnimation, 3.f, true);
 		PlayRandomSpeakingAnimation();  
-	} 
+	}  
+}
+
+void ADoctorCharacter::LookAtPlayer(AActor* PlayerActor)
+{
+	if (!PlayerActor)
+	{
+		return;
+	}
+ 
+	FVector NPCPosition = GetActorLocation();
+	FVector PlayerPosition = PlayerActor->GetActorLocation();
+	
+	FVector DirectionToPlayer = (PlayerPosition - NPCPosition).GetSafeNormal();
+	FRotator LookAtRotation = FRotationMatrix::MakeFromX(PlayerPosition - NPCPosition).Rotator();
+
+	SetActorRotation(FRotator(0.f, LookAtRotation.Yaw, 0.f));
 }
 
 void ADoctorCharacter::StopSpeaking()
@@ -119,7 +132,7 @@ void ADoctorCharacter::StopSpeaking()
 	if (AM_IdleAnimation)
 	{
 		PlayAnimMontage(AM_IdleAnimation);
-	}
+	} 
 }
 
 void ADoctorCharacter::PlayRandomSpeakingAnimation()
