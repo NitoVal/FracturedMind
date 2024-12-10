@@ -70,27 +70,31 @@ void ADoctorCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 									   bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor && OtherActor != this)
-	{ 
-		if (TriggerBox && TriggerBox->IsOverlappingActor(OtherActor))
-		{  
-			FVector ActorPosition = OtherActor->GetActorLocation(); 
-			FDialogueData* DialogueData = FindDialogueForActor(ActorPosition); 
+	{
+		APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor); 
+		if ((OtherActor && Cast<ACharacter>(OtherActor) == PlayerCharacter)) 
+		{
+			if (TriggerBox && TriggerBox->IsOverlappingActor(PlayerCharacter))
+			{  
+				FVector ActorPosition = PlayerCharacter->GetActorLocation();
+				FDialogueData* DialogueData = FindDialogueForActor(ActorPosition); 
 
-			if (DialogueData)
-			{ 
-				for (const FVector& ValidPosition : DialogueData->ValidPositions)
+				if (DialogueData)
 				{ 
-					if (ActorPosition.Equals(ValidPosition, 300.f))   
-					{
-						StartSpeaking(DialogueData);
-						TriggerBox->DestroyComponent();
-						return;  
+					for (const FVector& ValidPosition : DialogueData->ValidPositions)
+					{ 
+						if (ActorPosition.Equals(ValidPosition, 300.f))   
+						{
+							StartSpeaking(DialogueData);
+							TriggerBox->DestroyComponent();
+							return;  
+						}
 					}
 				}
 			}
 		}
 	}
-} 
+}
  
 void ADoctorCharacter::StartSpeaking(FDialogueData* DialogueData)
 {
