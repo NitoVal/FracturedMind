@@ -26,6 +26,12 @@ public:
 	FRotator HoldRotation;
 
 	FTransform OriginalTransform;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Properties")
+	bool bIsHammer;
+
+	bool IsHammer();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
