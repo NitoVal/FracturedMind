@@ -4,6 +4,7 @@
 #include "CollectibleSlotWidget.h"
 
 #include "Collectible.h"
+#include "CollectionWidget.h"
 #include "Components/Border.h"
 #include "Components/Image.h"
 #include "FracturedMind/CollectibleData.h"

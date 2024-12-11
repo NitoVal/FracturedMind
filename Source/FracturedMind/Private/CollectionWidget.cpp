@@ -3,6 +3,7 @@
 
 #include "CollectionWidget.h"
 
+#include "Collectible.h"
 #include "CollectibleSlotWidget.h"
 #include "Animation/WidgetAnimation.h"
 #include "Components/TextBlock.h"
