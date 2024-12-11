@@ -47,7 +47,3 @@ bool AItem::IsInteractable()
 	return true;
 }
 
-bool AItem::IsHammer()
-{
-	return bIsHammer;
-}

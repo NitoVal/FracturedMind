@@ -32,9 +32,7 @@ void UCollectionWidget::SetCollectibleText(ACollectible* CollectibleIn)
 	FCollectibleData* Row = CollectibleIn->Collectible.GetRow<FCollectibleData>("Collectible Context");
 	if (Row)
 	{
-		CollectibleNameText->SetText(Row->Name); 
-		CollectibleDescriptionText->SetAutoWrapText(true);
-		CollectibleDescriptionText->SetWrapTextAt(700.0f);
+		CollectibleNameText->SetText(Row->Name);
 		CollectibleDescriptionText->SetText(Row->Description);
 	}
 }

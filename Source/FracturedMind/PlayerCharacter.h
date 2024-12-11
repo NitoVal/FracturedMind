@@ -4,10 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h" 
-#include "Private/Collectible.h"
-#include "Private/CollectionWidget.h"
-#include "Terminal.h"
-#include "Sound/SoundBase.h"
 #include "PlayerCharacter.generated.h"
 
 class ACollectible;
@@ -122,10 +118,6 @@ public:
 	void PlaceBigItem(); 
 	void Pickup(AItem* Item);
 	void Pause();
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-	USoundBase* UncomfortableSound;
-	
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
