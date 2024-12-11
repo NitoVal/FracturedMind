@@ -15,6 +15,7 @@
 #include "PauseWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Private/BigItems.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -45,7 +46,7 @@ APlayerCharacter::APlayerCharacter()
 	HandPositionBigItem->SetupAttachment(FirstPersonCameraComponent);
 
 	InspectPosition = CreateDefaultSubobject<USceneComponent>(TEXT("InspectPosition"));
-	InspectPosition->SetupAttachment(FirstPersonCameraComponent);
+	InspectPosition->SetupAttachment(FirstPersonCameraComponent); 
 }
 
 // Called when the game starts or when spawned
@@ -212,6 +213,17 @@ void APlayerCharacter::Pickup(AItem* Item)
 		Hand = Item;
 		Hand->AttachToComponent(HandPosition,FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 		Hand->SetActorLocation(HandPosition->GetComponentLocation());
+		if (Item->IsHammer())
+		{
+			if (UncomfortableSound)  
+			{
+				UGameplayStatics::PlaySoundAtLocation(
+					this,                    
+					UncomfortableSound,           
+					GetActorLocation()       
+				);
+			}
+		}
 	}
 }
 
@@ -234,7 +246,8 @@ void APlayerCharacter::PlaceBigItem()
 		const FVector Start = FirstPersonCameraComponent->GetComponentLocation();
 		const FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
 		const FVector PlaceLocation = Start + (ForwardVector * 200.f);
-		
+		const FRotator PlaceRotation = FRotator(0.f, 0.f, 0.f);
+
 		HandBigItem->SetActorLocation(PlaceLocation);
 		
 		HandBigItem->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
