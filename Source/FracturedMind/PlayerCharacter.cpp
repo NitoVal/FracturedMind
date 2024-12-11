@@ -246,7 +246,8 @@ void APlayerCharacter::PlaceBigItem()
 		const FVector Start = FirstPersonCameraComponent->GetComponentLocation();
 		const FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
 		const FVector PlaceLocation = Start + (ForwardVector * 200.f);
-		
+		const FRotator PlaceRotation = FRotator(0.f, 0.f, 0.f);
+
 		HandBigItem->SetActorLocation(PlaceLocation);
 		
 		HandBigItem->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
