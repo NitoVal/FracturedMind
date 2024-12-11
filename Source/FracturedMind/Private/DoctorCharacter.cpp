@@ -60,8 +60,7 @@ FDialogueData* ADoctorCharacter::FindDialogueForActor(const FVector& ActorPositi
 				}
 			}
 		}
-	}
-	UE_LOG(LogTemp, Warning, TEXT("No dialogue found for position: %s"), *ActorPosition.ToString());
+	} 
 	return nullptr;
 }
 
@@ -71,7 +70,7 @@ void ADoctorCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 {
 	if (OtherActor && OtherActor != this)
 	{
-		APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor); 
+		APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
 		if ((OtherActor && Cast<ACharacter>(OtherActor) == PlayerCharacter)) 
 		{
 			if (TriggerBox && TriggerBox->IsOverlappingActor(PlayerCharacter))
