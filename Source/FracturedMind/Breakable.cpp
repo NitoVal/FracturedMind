@@ -40,10 +40,6 @@ void ABreakable::Interact()
 		if (PlayerCharacter->Hand->Tags.Contains(RequiredTag))
 			Destroy();
 	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1,5, FColor::Red,"Can't Break");
-	}
 }
 
 bool ABreakable::IsInteractable()
